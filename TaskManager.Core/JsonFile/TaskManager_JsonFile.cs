@@ -1,4 +1,5 @@
 ﻿using Microsoft.Extensions.Logging;
+using System.Runtime.Intrinsics.X86;
 using System.Text.Json;
 using TaskManager.Core.Extensions;
 using TaskManager.Core.Models;
@@ -94,6 +95,12 @@ internal class TaskManager_JsonFile : ITaskManager
         {
             _logger.LogDebug($"File doesn't exist. Creating {FilePath}.");
             File.Create(FilePath);
+        }
+
+        FileInfo fileInfo = new FileInfo(FilePath);
+        if(fileInfo.Length == 0) 
+        {
+            _logger.LogDebug($"File {FilePath} is empty. Skipping to parse content.");
         }
         else
         {

@@ -8,7 +8,10 @@
              xmlns:core="clr-namespace:TaskManager.Core.Models;assembly=TaskManager.Core"
              mc:Ignorable="d" 
              d:DesignHeight="450" d:DesignWidth="800"
-             x:Name="kanbanBoard">
+             x:Name="kanbanBoard"
+             PreviewMouseDown="KanbanBoard_PreviewMouseDown"
+             PreviewMouseMove="KanbanBoard_PreviewMouseMove"
+             PreviewMouseUp="KanbanBoard_PreviewMouseUp">
 
     <UserControl.Resources>
         <ObjectDataProvider x:Key="ETaskStatusValues" MethodName="GetValues" ObjectType="{x:Type System:Enum}">

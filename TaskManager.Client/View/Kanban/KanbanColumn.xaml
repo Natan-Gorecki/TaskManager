@@ -22,7 +22,16 @@
         <TextBlock Background="DarkGray" Text="{Binding TaskStatus, ElementName=kanbanColumn}"
                    Grid.Row="0"/>
 
-        <ListView Grid.Row="1" ItemsSource="{Binding Source={StaticResource TasksForStatus}}">
+        <ListView Grid.Row="1" ItemsSource="{Binding Source={StaticResource TasksForStatus}}" HorizontalContentAlignment="Stretch">
+            <ListBox.Template>
+                <ControlTemplate TargetType="{x:Type ListBox}">
+                    <Border Background="{TemplateBinding Background}"
+                            BorderBrush="{TemplateBinding BorderBrush}"
+                            BorderThickness="{TemplateBinding BorderThickness}">
+                        <ItemsPresenter/>
+                    </Border>
+                </ControlTemplate>
+            </ListBox.Template>
             <ListView.ItemTemplate>
                 <DataTemplate>
                     <kanban:KanbanTask/>

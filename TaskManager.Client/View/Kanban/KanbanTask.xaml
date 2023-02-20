@@ -6,7 +6,7 @@
              xmlns:core="clr-namespace:TaskManager.Core.Models;assembly=TaskManager.Core"
              mc:Ignorable="d"
              d:DataContext="{d:DesignInstance Type=core:Task, IsDesignTimeCreatable=True}">
-    <Grid>
+    <Grid Background="DarkGray">
         
         <Grid.RowDefinitions>
             <RowDefinition Height="*"/>

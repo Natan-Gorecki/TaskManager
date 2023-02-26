@@ -2,7 +2,7 @@
 
 namespace TaskManager.Core.Extensions;
 
-internal static class ObjectExtensions
+public static class ObjectExtensions
 {
     public static T CopyFrom<T>(this T destination, T source)
         where T : class

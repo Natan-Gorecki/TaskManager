@@ -32,6 +32,11 @@ public partial class KanbanBoard : UserControl
         set { SetValue(TaskCollectionProperty, value); }
     }
 
+    public IEnumerable<KanbanColumn> KanbanColumns
+    {
+        get => this.FindChildren<KanbanColumn>();
+    }
+
     public KanbanBoard()
     {
         InitializeComponent();

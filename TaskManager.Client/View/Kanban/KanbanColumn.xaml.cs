@@ -12,6 +12,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+using TaskManager.Client.Extensions;
 using TaskManager.Core.Models;
 
 namespace TaskManager.Client.View.Kanban
@@ -38,6 +39,11 @@ namespace TaskManager.Client.View.Kanban
         {
             get { return (ETaskStatus)GetValue(TaskStatusProperty); }
             set { SetValue(TaskStatusProperty, value); }
+        }
+
+        public IEnumerable<KanbanTask> KanbanTasks
+        {
+            get => this.FindChildren<KanbanTask>();
         }
 
         public KanbanColumn()

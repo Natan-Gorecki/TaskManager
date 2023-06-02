@@ -1,7 +1,9 @@
-﻿using System.Windows.Media;
+﻿using System.Collections.Generic;
+using System.Windows.Media;
 using System.Windows;
 using System;
 using System.Windows.Controls;
+using System.Collections;
 
 namespace TaskManager.Client.Extensions;
 
@@ -46,6 +48,12 @@ internal static class ViewExtensions
     public static T? FindChild<T>(this DependencyObject dependencyObject) 
         where T : FrameworkElement
     {
+        return FindChild<T>(dependencyObject, child => true);
+    }
+
+    public static T? FindChild<T>(this DependencyObject dependencyObject, Predicate<T> predicate)
+        where T : FrameworkElement
+    {
         ArgumentNullException.ThrowIfNull(dependencyObject);
 
         int childrenCount = VisualTreeHelper.GetChildrenCount(dependencyObject);
@@ -54,12 +62,12 @@ internal static class ViewExtensions
         {
             DependencyObject child = VisualTreeHelper.GetChild(dependencyObject, i);
 
-            if (child is T typedChild)
+            if (child is T typedChild && predicate(typedChild))
             {
                 return typedChild;
             }
 
-            T? foundChild = FindChild<T>(child);
+            T? foundChild = FindChild<T>(child, predicate);
 
             if (foundChild != null)
             {
@@ -143,5 +151,25 @@ internal static class ViewExtensions
         }
 
         return dependencyObject.FindControlOrAncestor<TResult>();
+    }
+
+    public static IEnumerable<T> FindChildren<T>(this DependencyObject parent)
+    {
+        int childrenCount = VisualTreeHelper.GetChildrenCount(parent);
+
+        for (int i = 0; i < childrenCount; i++)
+        {
+            DependencyObject child = VisualTreeHelper.GetChild(parent, i);
+
+            if (child is T typedChild)
+            {
+                yield return typedChild;
+            }
+
+            foreach (T nestedChild in FindChildren<T>(child))
+            {
+                yield return nestedChild;
+            }
+        }
     }
 }

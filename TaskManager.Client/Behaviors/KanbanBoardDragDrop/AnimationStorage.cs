@@ -16,7 +16,7 @@ using System.Security.Cryptography.Xml;
 
 namespace TaskManager.Client.Behaviors.KanbanBoardDragDrop;
 
-internal class AnimationStorage : IAnimationStorage
+public class AnimationStorage : IAnimationStorage
 {
     private readonly TimeSpan _animationDuration = TimeSpan.FromSeconds(0.15);
     private Dictionary<int, Animation> _ongoingAnimations = new();

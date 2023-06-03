@@ -6,7 +6,7 @@ using TaskManager.Core.Models;
 
 namespace TaskManager.Client.Behaviors.KanbanBoardDragDrop;
 
-internal class DragDropEventArgs
+public class DragDropEventArgs
 {
     public Point InitialPosition { get; set; }
     public Point MouseInsideControl { get; set; }

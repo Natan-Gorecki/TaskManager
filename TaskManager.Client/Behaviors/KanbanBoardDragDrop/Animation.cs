@@ -8,7 +8,7 @@ using TaskManager.Core.Models;
 
 namespace TaskManager.Client.Behaviors.KanbanBoardDragDrop;
 
-internal class Animation
+public class Animation
 {
     public required KanbanTask KanbanTask { get; set; }
     public required double From { get; set; }

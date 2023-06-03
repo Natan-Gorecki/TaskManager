@@ -17,7 +17,7 @@ using Task = TaskManager.Core.Models.Task;
 
 namespace TaskManager.Client.Behaviors.KanbanBoardDragDrop;
 
-internal class DragDropHandler : IDragDropHandler
+public class DragDropHandler : IDragDropHandler
 {
     DragDropEventArgs _eventArgs;
 

@@ -21,7 +21,7 @@ using TaskManager.Client.Behaviors.KanbanBoardDragDrop;
 
 namespace TaskManager.Client.Behaviors;
 
-internal class KanbanBoardDragDropBehavior : Behavior<KanbanBoard>
+public class KanbanBoardDragDropBehavior : Behavior<KanbanBoard>
 {
     IDragDropHandler _dragDropHandler = App.IoC.GetRequiredService<IDragDropHandler>();
 
@@ -39,7 +39,7 @@ internal class KanbanBoardDragDropBehavior : Behavior<KanbanBoard>
         AssociatedObject.PreviewMouseUp -= KanbanBoard_PreviewMouseUp;
     }
 
-    private void KanbanBoard_PreviewMouseDown(object sender, MouseButtonEventArgs e)
+    public void KanbanBoard_PreviewMouseDown(object sender, MouseButtonEventArgs e)
     {
         if (_dragDropHandler.IsStarted())
         {
@@ -56,7 +56,7 @@ internal class KanbanBoardDragDropBehavior : Behavior<KanbanBoard>
         _dragDropHandler.StartDragDrop(AssociatedObject, kanbanTask, e.GetPosition(Application.Current.MainWindow), e.GetPosition(kanbanTask));
     }
 
-    private void KanbanBoard_PreviewMouseMove(object sender, MouseEventArgs e)
+    public void KanbanBoard_PreviewMouseMove(object sender, MouseEventArgs e)
     {
         if (!_dragDropHandler.IsStarted())
         {
@@ -66,7 +66,7 @@ internal class KanbanBoardDragDropBehavior : Behavior<KanbanBoard>
         _dragDropHandler.UpdateDragDrop(e.GetPosition(Application.Current.MainWindow));
     }
 
-    private void KanbanBoard_PreviewMouseUp(object sender, MouseButtonEventArgs e)
+    public void KanbanBoard_PreviewMouseUp(object sender, MouseButtonEventArgs e)
     {
         if (!_dragDropHandler.IsStarted())
         {

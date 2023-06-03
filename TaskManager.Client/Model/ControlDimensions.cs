@@ -2,7 +2,7 @@
 
 namespace TaskManager.Client.Model;
 
-internal class ControlDimensions
+public class ControlDimensions
 {
     public Point TopLeft { get; set; }
     public Point Center

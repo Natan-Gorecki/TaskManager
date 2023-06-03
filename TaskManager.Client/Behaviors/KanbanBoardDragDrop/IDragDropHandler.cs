@@ -8,7 +8,7 @@ using TaskManager.Client.View.Kanban;
 
 namespace TaskManager.Client.Behaviors.KanbanBoardDragDrop;
 
-internal interface IDragDropHandler
+public interface IDragDropHandler
 {
     bool IsStarted();
     void StartDragDrop(KanbanBoard kanbanBoard, KanbanTask kanbanTask, Point initialPosition, Point mouseInsideControl);

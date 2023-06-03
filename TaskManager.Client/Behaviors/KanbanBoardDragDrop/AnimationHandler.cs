@@ -6,7 +6,7 @@ using TaskManager.Core.Models;
 
 namespace TaskManager.Client.Behaviors.KanbanBoardDragDrop;
 
-internal class AnimationHandler : IAnimationHandler
+public class AnimationHandler : IAnimationHandler
 {
     private ILogger<AnimationHandler> _logger = App.IoC.GetRequiredService<ILogger<AnimationHandler>>();
     private IAnimationStorage _animationStorage = App.IoC.GetRequiredService<IAnimationStorage>();

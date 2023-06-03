@@ -1,6 +1,6 @@
 ﻿namespace TaskManager.Client.Behaviors.KanbanBoardDragDrop;
 
-internal enum Direction
+public enum Direction
 {
     Top,
     Bottom

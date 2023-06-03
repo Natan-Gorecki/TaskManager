@@ -1,6 +1,6 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
-using TaskManager.Core.Models;
 using TaskManager.Core.JsonFile;
+using TaskManager.Core.Models;
 
 namespace TasksManager.Core;
 

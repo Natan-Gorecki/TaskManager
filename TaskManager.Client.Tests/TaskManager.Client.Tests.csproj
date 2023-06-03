@@ -23,4 +23,8 @@
     <ProjectReference Include="..\TaskManager.Core\TaskManager.Core.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Behaviors\KanbanBoardDragDrop\" />
+  </ItemGroup>
+
 </Project>

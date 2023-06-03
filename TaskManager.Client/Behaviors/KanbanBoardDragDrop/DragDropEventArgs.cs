@@ -1,5 +1,4 @@
 ﻿using System.Windows;
-using System.Windows.Controls;
 using TaskManager.Client.Model;
 using TaskManager.Client.View.Kanban;
 using TaskManager.Core.Models;

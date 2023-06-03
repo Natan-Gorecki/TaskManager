@@ -1,23 +1,9 @@
 ﻿using Microsoft.Xaml.Behaviors;
-using System.Windows.Controls;
 using System.Windows;
 using System.Windows.Input;
-using TaskManager.Client.Extensions;
-using TaskManager.Client.Model;
-using TaskManager.Client.View.Kanban;
-using System.Diagnostics;
-using System.Windows.Media;
-using System;
-using TaskManager.Core.Extensions;
-using TaskManager.Core.Models;
-using System.Linq;
-using System.Diagnostics.Tracing;
-using System.Windows.Media.Animation;
-using System.Xaml.Schema;
-using System.Diagnostics.Metrics;
-using System.Threading.Tasks;
-using Task = TaskManager.Core.Models.Task;
 using TaskManager.Client.Behaviors.KanbanBoardDragDrop;
+using TaskManager.Client.Extensions;
+using TaskManager.Client.View.Kanban;
 
 namespace TaskManager.Client.Behaviors;
 

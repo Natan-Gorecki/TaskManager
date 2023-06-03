@@ -1,5 +1,4 @@
 ﻿using Microsoft.Extensions.Logging;
-using System.Runtime.Intrinsics.X86;
 using System.Text.Json;
 using TaskManager.Core.Extensions;
 using TaskManager.Core.Models;

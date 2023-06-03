@@ -1,6 +1,4 @@
-﻿using Microsoft.Extensions.Logging;
-
-namespace TaskManager.Console.Models;
+﻿namespace TaskManager.Console.Models;
 
 internal class Command : ICommand
 {

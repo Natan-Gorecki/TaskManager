@@ -1,9 +1,7 @@
-﻿using System.Collections.Generic;
-using System.Windows.Media;
+﻿using System;
+using System.Collections.Generic;
 using System.Windows;
-using System;
-using System.Windows.Controls;
-using System.Collections;
+using System.Windows.Media;
 
 namespace TaskManager.Client.Extensions;
 

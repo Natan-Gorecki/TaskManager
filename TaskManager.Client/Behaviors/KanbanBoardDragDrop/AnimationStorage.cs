@@ -1,18 +1,10 @@
 ﻿using System;
-using System.Linq;
-using System.Collections.Specialized;
 using System.Collections.Generic;
-using TaskManager.Client.Model;
+using System.Windows;
+using System.Windows.Media;
+using System.Windows.Media.Animation;
 using TaskManager.Client.View.Kanban;
 using TaskManager.Core.Models;
-using System.Windows.Media.Animation;
-using System.Windows.Media;
-using System.Windows.Controls;
-using Microsoft.VisualBasic;
-using System.Windows;
-using System.Diagnostics;
-using System.Windows.Media.Media3D;
-using System.Security.Cryptography.Xml;
 
 namespace TaskManager.Client.Behaviors.KanbanBoardDragDrop;
 

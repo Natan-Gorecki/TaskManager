@@ -7,6 +7,7 @@ using System.Data;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Windows;
+using TaskManager.Client.Behaviors.KanbanBoardDragDrop;
 using TasksManager.Core;
 
 namespace TaskManager.Client
@@ -21,7 +22,12 @@ namespace TaskManager.Client
         static App()
         {
             var serviceCollection = new ServiceCollection()
-                .AddTasksManager();
+                .AddTasksManager()
+                .AddLogging();
+
+            serviceCollection.AddTransient<IDragDropHandler, DragDropHandler>();
+            serviceCollection.AddTransient<IAnimationHandler, AnimationHandler>();
+            serviceCollection.AddTransient<IAnimationStorage, AnimationStorage>();
 
             IoC = Ioc.Default;
             IoC.ConfigureServices(serviceCollection.BuildServiceProvider());

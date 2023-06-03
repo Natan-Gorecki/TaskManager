@@ -1,9 +1,10 @@
 ﻿using System.Windows;
 using System.Windows.Controls;
+using TaskManager.Client.Model;
 using TaskManager.Client.View.Kanban;
 using TaskManager.Core.Models;
 
-namespace TaskManager.Client.Model;
+namespace TaskManager.Client.Behaviors.KanbanBoardDragDrop;
 
 internal class DragDropEventArgs
 {
@@ -17,6 +18,7 @@ internal class DragDropEventArgs
 
     public Task Task { get; set; }
     public Task? PreviewTask { get; set; }
+    public Task? PreviousPreviewTask { get; set; }
 
     public KanbanTask DraggedKanbanTask { get; set; }
 }

@@ -5,7 +5,7 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:i="http://schemas.microsoft.com/xaml/behaviors"
-             xmlns:behaviours="clr-namespace:TaskManager.Client.Behaviours"
+             xmlns:behaviours="clr-namespace:TaskManager.Client.Behaviors"
              xmlns:kanban="clr-namespace:TaskManager.Client.View.Kanban"
              xmlns:core="clr-namespace:TaskManager.Core.Models;assembly=TaskManager.Core"
              x:Name="kanbanBoard">
@@ -19,7 +19,7 @@
     </UserControl.Resources>
 
     <i:Interaction.Behaviors>
-        <behaviours:KanbanBoardDragDrop />
+        <behaviours:KanbanBoardDragDropBehavior />
     </i:Interaction.Behaviors>
     
     <Grid>

@@ -1,73 +1,61 @@
-﻿using Microsoft.Xaml.Behaviors;
-using System.Windows.Controls;
+﻿using System;
+using System.Collections.Generic;
+using System.Collections.ObjectModel;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
 using System.Windows;
+using System.Windows.Controls;
 using System.Windows.Input;
+using System.Windows.Media;
 using TaskManager.Client.Extensions;
 using TaskManager.Client.Model;
 using TaskManager.Client.View.Kanban;
-using System.Diagnostics;
-using System.Windows.Media;
-using System;
 using TaskManager.Core.Extensions;
 using TaskManager.Core.Models;
-using System.Linq;
-using System.Diagnostics.Tracing;
+using Task = TaskManager.Core.Models.Task;
 
-namespace TaskManager.Client.Behaviours;
+namespace TaskManager.Client.Behaviors.KanbanBoardDragDrop;
 
-internal class KanbanBoardDragDrop : Behavior<KanbanBoard>
+internal class DragDropHandler : IDragDropHandler
 {
-    DragDropEventArgs? _eventArgs = null;
+    DragDropEventArgs _eventArgs;
 
-    protected override void OnAttached()
+    private IAnimationHandler _animationHandler = App.IoC.GetRequiredService<IAnimationHandler>();
+
+    private bool _isStarted = false;
+    private ObservableCollection<Task>? _tasks;
+    private Canvas? _previewCanvas;
+
+    public bool IsStarted() => _isStarted;
+
+    public void StartDragDrop(KanbanBoard kanbanBoard, KanbanTask kanbanTask, Point initialPosition, Point mouseInsideControl)
     {
-        base.OnAttached();
-        AssociatedObject.PreviewMouseDown += KanbanBoard_PreviewMouseDown;
-        AssociatedObject.PreviewMouseMove += KanbanBoard_PreviewMouseMove;
-        AssociatedObject.PreviewMouseUp += KanbanBoard_PreviewMouseUp;
-    }
+        ArgumentNullException.ThrowIfNull(kanbanBoard);
+        ArgumentNullException.ThrowIfNull(kanbanTask);
 
-    protected override void OnDetaching()
-    {
-        base.OnDetaching();
-        AssociatedObject.PreviewMouseDown -= KanbanBoard_PreviewMouseDown;
-        AssociatedObject.PreviewMouseMove -= KanbanBoard_PreviewMouseMove;
-        AssociatedObject.PreviewMouseUp -= KanbanBoard_PreviewMouseUp;
-    }
+        _isStarted = true;
+        _tasks = kanbanBoard.TaskCollection;
+        _previewCanvas = kanbanBoard.previewCanvas;
 
-    private void KanbanBoard_PreviewMouseDown(object sender, MouseButtonEventArgs e)
-    {
-        AssociatedObject.CaptureMouse();
+        _eventArgs = CreateDragDropEventArgs(kanbanTask, initialPosition, mouseInsideControl);
+        _animationHandler.Setup(kanbanBoard, _eventArgs.KanbanTask.Height);
 
-        DependencyObject dependencyObject = (DependencyObject)e.OriginalSource;
-        KanbanTask? kanbanTask = dependencyObject.FindControlOrAncestor<KanbanTask>();
-        if (kanbanTask is null)
-        {
-            return;
-        }
 
-        _eventArgs = CreateDragDropEventArgs(kanbanTask, e);
 
-        AssociatedObject.TaskCollection.Remove(_eventArgs.Task);
+        _tasks.Remove(_eventArgs.Task);
         UpdateTaskOrder();
-        AssociatedObject.TaskCollection.Add(_eventArgs.PreviewTask!);
-        
-        AssociatedObject.previewCanvas.Children.Add(_eventArgs.DraggedKanbanTask);
+        _tasks.Add(_eventArgs.PreviewTask!);
+
+        _previewCanvas.Children.Add(_eventArgs.DraggedKanbanTask);
         Canvas.SetLeft(_eventArgs.DraggedKanbanTask, _eventArgs.KanbanTask.TopLeft.X);
         Canvas.SetTop(_eventArgs.DraggedKanbanTask, _eventArgs.KanbanTask.TopLeft.Y);
     }
 
-    private void KanbanBoard_PreviewMouseMove(object sender, MouseEventArgs e)
+    public void UpdateDragDrop(Point currentPosition)
     {
-        if (_eventArgs is null)
-        {
-            return;
-        }
-
-        Point currentPosition = e.GetPosition(Application.Current.MainWindow);
         double offsetX = currentPosition.X - _eventArgs.InitialPosition.X;
         double offsetY = currentPosition.Y - _eventArgs.InitialPosition.Y;
-
 
         _eventArgs.DraggedKanbanTask.RenderTransform = new TranslateTransform(offsetX, offsetY);
 
@@ -79,49 +67,47 @@ internal class KanbanBoardDragDrop : Behavior<KanbanBoard>
             Width = _eventArgs.DraggedKanbanTask.ActualWidth,
         };
 
-        if(draggedTaskCords.Center.X < _eventArgs.KanbanBoard.TopLeft.X || draggedTaskCords.Center.X > _eventArgs.KanbanBoard.RightBottom.X
-            || draggedTaskCords.Center.Y < _eventArgs.KanbanColumn.TopLeft.Y || draggedTaskCords.Center.Y > _eventArgs.KanbanColumn.RightBottom.Y)
+        if (IsOutsideKanbanBoard(draggedTaskCords, _eventArgs) && _eventArgs.PreviewTask != null)
         {
-            if(_eventArgs.PreviewTask != null)
-            {
-                AssociatedObject.TaskCollection.Remove(_eventArgs.PreviewTask);
-                _eventArgs.PreviewTask = null;
-                return;
-            }
+            _tasks.Remove(_eventArgs.PreviewTask);
+            _animationHandler.HandleAnimation(_eventArgs.PreviewTask, null);
+            _eventArgs.PreviewTask = null;
+            return;
         }
 
         var kanbanColumn = Application.Current.MainWindow.FindUnderlyingControl<KanbanColumn, KanbanTask>(draggedTaskCords.Center, _eventArgs.DraggedKanbanTask);
-        if (kanbanColumn != null)
+        if (kanbanColumn is null)
         {
-            UpdatePreviewTask(kanbanColumn, draggedTaskCords.Center);
-            Debug.WriteLine($"Point X: {draggedTaskCords.Center.X}, Y: {draggedTaskCords.Center.Y} - column {kanbanColumn.TaskStatus}");
+            return;
+        }
 
-        }
-        else
-        {
-            Debug.WriteLine($"Point X: {draggedTaskCords.Center.X}, Y: {draggedTaskCords.Center.Y} - column not found!");
-        }
+        UpdatePreviewTask(kanbanColumn, draggedTaskCords.Center);
     }
 
-    private void KanbanBoard_PreviewMouseUp(object sender, MouseButtonEventArgs e)
+    public void StopDragDrop()
     {
-        if (_eventArgs != null)
+        _isStarted = false;
+
+        if (_eventArgs.PreviewTask != null)
         {
-            AssociatedObject.ReleaseMouseCapture();
-
-            if (_eventArgs.PreviewTask != null)
-            {
-                AssociatedObject.TaskCollection.Remove(_eventArgs.PreviewTask);
-                _eventArgs.Task.Status = _eventArgs.PreviewTask.Status;
-                _eventArgs.Task.OrderValue = _eventArgs.PreviewTask.OrderValue;
-            }
-
-            AssociatedObject.TaskCollection.Add(_eventArgs.Task);
-            UpdateTaskOrder();
-            AssociatedObject.previewCanvas.Children.Remove(_eventArgs.DraggedKanbanTask);
-
-            _eventArgs = null;
+            _tasks.Remove(_eventArgs.PreviewTask);
+            _eventArgs.Task.Status = _eventArgs.PreviewTask.Status;
+            _eventArgs.Task.OrderValue = _eventArgs.PreviewTask.OrderValue;
         }
+
+        _tasks.Add(_eventArgs.Task);
+        UpdateTaskOrder();
+        _previewCanvas.Children.Remove(_eventArgs.DraggedKanbanTask);
+
+        _eventArgs = null;
+    }
+
+    private static bool IsOutsideKanbanBoard(ControlDimensions draggedTaskCords, DragDropEventArgs eventArgs)
+    {
+        return draggedTaskCords.Center.X < eventArgs.KanbanBoard.TopLeft.X
+            || draggedTaskCords.Center.X > eventArgs.KanbanBoard.RightBottom.X
+            || draggedTaskCords.Center.Y < eventArgs.KanbanColumn.TopLeft.Y
+            || draggedTaskCords.Center.Y > eventArgs.KanbanColumn.RightBottom.Y;
     }
 
     private void UpdateTaskOrder()
@@ -133,7 +119,7 @@ internal class KanbanBoardDragDrop : Behavior<KanbanBoard>
 
         void UpdateColumnOrder(ETaskStatus status)
         {
-            var orderedTasks = AssociatedObject.TaskCollection.Where(t => t.Status == status).OrderBy(t => t.OrderValue).ToList();
+            var orderedTasks = _tasks.Where(t => t.Status == status).OrderBy(t => t.OrderValue).ToList();
             int currentOrder = 10;
 
             foreach (var item in orderedTasks)
@@ -144,19 +130,18 @@ internal class KanbanBoardDragDrop : Behavior<KanbanBoard>
         }
     }
 
-    private DragDropEventArgs CreateDragDropEventArgs(KanbanTask kanbanTask, MouseEventArgs mouseEventArgs)
+    private DragDropEventArgs CreateDragDropEventArgs(KanbanTask kanbanTask, Point initialPosition, Point mouseInsideControl)
     {
         ArgumentNullException.ThrowIfNull(kanbanTask);
-        ArgumentNullException.ThrowIfNull(mouseEventArgs);
 
         KanbanColumn? kanbanColumn = kanbanTask.FindAncestor<KanbanColumn>();
-        if(kanbanColumn is null)
+        if (kanbanColumn is null)
         {
             throw new ArgumentException($"Missing {nameof(KanbanColumn)} parent control.");
         }
 
         KanbanBoard? kanbanBoard = kanbanColumn.FindAncestor<KanbanBoard>();
-        if(kanbanBoard is null)
+        if (kanbanBoard is null)
         {
             throw new ArgumentException($"Missing {nameof(KanbanBoard)} parent control.");
         }
@@ -169,18 +154,19 @@ internal class KanbanBoardDragDrop : Behavior<KanbanBoard>
         var topLeft = kanbanTask.TransformToAncestor(Application.Current.MainWindow).Transform(new Point(0, 0));
 
         Task previewTask = ShallowCopy(task);
-        previewTask.OrderValue = task.OrderValue - 5;
+        previewTask.IsPreview = true;
+        previewTask.OrderValue = task.OrderValue - 9;
 
         KanbanTask previewKanbanTask = ShallowCopy(kanbanTask);
 
         DragDropEventArgs eventArgs = new DragDropEventArgs
         {
-            InitialPosition = mouseEventArgs.GetPosition(Application.Current.MainWindow),
-            MouseInsideControl = mouseEventArgs.GetPosition(kanbanTask),
+            InitialPosition = initialPosition,
+            MouseInsideControl = mouseInsideControl,
 
             MainWindow = new ControlDimensions
             {
-                TopLeft = new Point(0,0),
+                TopLeft = new Point(0, 0),
                 Width = Application.Current.MainWindow.ActualWidth,
                 Height = Application.Current.MainWindow.ActualHeight,
             },
@@ -246,7 +232,10 @@ internal class KanbanBoardDragDrop : Behavior<KanbanBoard>
         double itemHeight = kanbanTask.ActualHeight + kanbanTask.Margin.Top + kanbanTask.Margin.Bottom;
         double offsetY = point.Y - columnTopLeft.Y;
 
-        int orderValue = 1 + (int)Math.Floor(offsetY / (itemHeight / 2)) * 5;
+        int orderValue = 1 + (int)Math.Floor(offsetY / itemHeight) * 10;
+        if (orderValue < 0) orderValue = 1;
+
+        //Trace.WriteLine($"Order value: {orderValue}");
 
         Task previewTask = new Task
         {
@@ -257,17 +246,26 @@ internal class KanbanBoardDragDrop : Behavior<KanbanBoard>
 
         if (_eventArgs.PreviewTask is null)
         {
+            _eventArgs.PreviousPreviewTask = previewTask;
             _eventArgs.PreviewTask = previewTask;
-            AssociatedObject.TaskCollection.Add(previewTask);
+
+            _tasks.Add(previewTask);
+            _animationHandler.HandleAnimation(null, previewTask);
+
             return;
         }
 
         if (_eventArgs.PreviewTask.OrderValue != previewTask.OrderValue
             || _eventArgs.PreviewTask.Status != previewTask.Status)
         {
-            AssociatedObject.TaskCollection.Remove(_eventArgs.PreviewTask);
+            _tasks.Remove(_eventArgs.PreviewTask);
+
+            _eventArgs.PreviousPreviewTask = _eventArgs.PreviewTask;
             _eventArgs.PreviewTask = previewTask;
-            AssociatedObject.TaskCollection.Add(previewTask);
+
+            _tasks.Add(previewTask);
+
+            _animationHandler.HandleAnimation(_eventArgs.PreviousPreviewTask, _eventArgs.PreviewTask);
         }
     }
 }

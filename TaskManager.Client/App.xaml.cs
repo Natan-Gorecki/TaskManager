@@ -11,7 +11,7 @@ namespace TaskManager.Client
     /// </summary>
     public partial class App : Application
     {
-        public static Ioc IoC { get; }
+        public static Ioc IoC { get; set; }
 
         static App()
         {
@@ -22,6 +22,7 @@ namespace TaskManager.Client
             serviceCollection.AddTransient<IDragDropHandler, DragDropHandler>();
             serviceCollection.AddTransient<IAnimationHandler, AnimationHandler>();
             serviceCollection.AddTransient<IAnimationStorage, AnimationStorage>();
+            serviceCollection.AddTransient<IViewService, ViewService>();
 
             IoC = Ioc.Default;
             IoC.ConfigureServices(serviceCollection.BuildServiceProvider());

@@ -1,4 +1,5 @@
 ﻿using System.Windows.Controls;
+using TaskManager.Client.Extensions;
 
 namespace TaskManager.Client.View.Kanban;
 
@@ -9,6 +10,7 @@ public partial class KanbanTask : UserControl
 {
     public KanbanTask()
     {
-        InitializeComponent();
+        //InitializeComponent();
+        this.LoadViewFromUri("/TaskManager.Client;component/view/kanban/kanbantask.xaml");
     }
 }

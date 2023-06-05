@@ -23,19 +23,21 @@ public class DragDropHandler : IDragDropHandler
     private ObservableCollection<Task>? _tasks;
     private Canvas? _previewCanvas;
 
+    private IViewService? _viewService;
+
     public bool IsStarted() => _isStarted;
 
-    public void StartDragDrop(KanbanBoard kanbanBoard, KanbanTask kanbanTask, Point initialPosition, Point mouseInsideControl)
+    public void StartDragDrop(IViewService viewService)
     {
-        ArgumentNullException.ThrowIfNull(kanbanBoard);
-        ArgumentNullException.ThrowIfNull(kanbanTask);
+        ArgumentNullException.ThrowIfNull(viewService);
+        _viewService = viewService;
 
         _isStarted = true;
-        _tasks = kanbanBoard.TaskCollection;
-        _previewCanvas = kanbanBoard.previewCanvas;
+        _tasks = _viewService.GetKanbanBoard().TaskCollection;
+        _previewCanvas = _viewService.GetKanbanBoard().previewCanvas;
 
-        _eventArgs = CreateDragDropEventArgs(kanbanTask, initialPosition, mouseInsideControl);
-        _animationHandler.Setup(kanbanBoard, _eventArgs.KanbanTask.Height);
+        _eventArgs = CreateDragDropEventArgs(_viewService.GetKanbanTask(), _viewService.GetCurrentPosition(), _viewService.GetMouseInsideControl());
+        _animationHandler.Setup(_viewService.GetKanbanBoard(), _eventArgs.KanbanTask.Height);
 
 
 
@@ -48,10 +50,10 @@ public class DragDropHandler : IDragDropHandler
         Canvas.SetTop(_eventArgs.DraggedKanbanTask, _eventArgs.KanbanTask.TopLeft.Y);
     }
 
-    public void UpdateDragDrop(Point currentPosition)
+    public void UpdateDragDrop()
     {
-        double offsetX = currentPosition.X - _eventArgs.InitialPosition.X;
-        double offsetY = currentPosition.Y - _eventArgs.InitialPosition.Y;
+        double offsetX = _viewService.GetCurrentPosition().X - _eventArgs.InitialPosition.X;
+        double offsetY = _viewService.GetCurrentPosition().Y - _eventArgs.InitialPosition.Y;
 
         _eventArgs.DraggedKanbanTask.RenderTransform = new TranslateTransform(offsetX, offsetY);
 

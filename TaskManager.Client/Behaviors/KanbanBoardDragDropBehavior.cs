@@ -10,6 +10,7 @@ namespace TaskManager.Client.Behaviors;
 public class KanbanBoardDragDropBehavior : Behavior<KanbanBoard>
 {
     IDragDropHandler _dragDropHandler = App.IoC.GetRequiredService<IDragDropHandler>();
+    IViewService _viewService = App.IoC.GetRequiredService<IViewService>();
 
     protected override void OnAttached()
     {
@@ -32,14 +33,14 @@ public class KanbanBoardDragDropBehavior : Behavior<KanbanBoard>
             return;
         }
 
-        KanbanTask? kanbanTask = (e.OriginalSource as DependencyObject)?.FindControlOrAncestor<KanbanTask>();
-        if (kanbanTask is null)
+        if (!_viewService.IsKanbanTaskDragged(e))
         {
             return;
         }
 
-        AssociatedObject.CaptureMouse();
-        _dragDropHandler.StartDragDrop(AssociatedObject, kanbanTask, e.GetPosition(Application.Current.MainWindow), e.GetPosition(kanbanTask));
+        _viewService.Setup(AssociatedObject, e);
+        _viewService.CaptureMouse();
+        _dragDropHandler.StartDragDrop(_viewService);
     }
 
     public void KanbanBoard_PreviewMouseMove(object sender, MouseEventArgs e)
@@ -49,7 +50,8 @@ public class KanbanBoardDragDropBehavior : Behavior<KanbanBoard>
             return;
         }
 
-        _dragDropHandler.UpdateDragDrop(e.GetPosition(Application.Current.MainWindow));
+        _viewService.UpdateMousePosition(e);
+        _dragDropHandler.UpdateDragDrop();
     }
 
     public void KanbanBoard_PreviewMouseUp(object sender, MouseButtonEventArgs e)
@@ -59,7 +61,7 @@ public class KanbanBoardDragDropBehavior : Behavior<KanbanBoard>
             return;
         }
 
-        AssociatedObject.ReleaseMouseCapture();
+        _viewService.ReleaseMouseCapture();
         _dragDropHandler.StopDragDrop();
     }
 }

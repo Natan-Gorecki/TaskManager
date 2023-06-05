@@ -28,6 +28,7 @@ public partial class KanbanBoard : UserControl
 
     public KanbanBoard()
     {
-        InitializeComponent();
+        //InitializeComponent();
+        this.LoadViewFromUri("/TaskManager.Client;component/view/kanban/kanbanboard.xaml");
     } 
 }

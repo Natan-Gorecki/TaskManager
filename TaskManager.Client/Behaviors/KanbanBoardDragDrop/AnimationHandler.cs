@@ -14,7 +14,7 @@ public class AnimationHandler : IAnimationHandler
     private KanbanBoard? _kanbanBoard;
     private double? _kanbanTaskHeight;
 
-    public void Setup(KanbanBoard kanbanBoard, double kanbanTaskHeight)
+    public void Setup(IViewService viewService)
     {
         ArgumentNullException.ThrowIfNull(kanbanBoard);
 

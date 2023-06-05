@@ -1,269 +1,120 @@
 ﻿using System;
-using System.Collections.ObjectModel;
-using System.Linq;
-using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Media;
-using TaskManager.Client.Extensions;
-using TaskManager.Client.Model;
-using TaskManager.Client.View.Kanban;
 using TaskManager.Core.Extensions;
 using TaskManager.Core.Models;
-using Task = TaskManager.Core.Models.Task;
 
 namespace TaskManager.Client.Behaviors.KanbanBoardDragDrop;
 
 public class DragDropHandler : IDragDropHandler
 {
-    DragDropEventArgs _eventArgs;
-
     private IAnimationHandler _animationHandler = App.IoC.GetRequiredService<IAnimationHandler>();
-
-    private bool _isStarted = false;
-    private ObservableCollection<Task>? _tasks;
-    private Canvas? _previewCanvas;
-
+    private ITaskCollectionManager _taskCollectionManager = App.IoC.GetRequiredService<ITaskCollectionManager>();
     private IViewService? _viewService;
 
-    public bool IsStarted() => _isStarted;
+    private Task? _orginalTask;
+    private Task? _previewTask;
+
+    public bool IsStarted { get; private set; } = false;
 
     public void StartDragDrop(IViewService viewService)
     {
         ArgumentNullException.ThrowIfNull(viewService);
         _viewService = viewService;
 
-        _isStarted = true;
-        _tasks = _viewService.GetKanbanBoard().TaskCollection;
-        _previewCanvas = _viewService.GetKanbanBoard().previewCanvas;
+        IsStarted = true;
+        _animationHandler.Setup(_viewService);
+        _viewService.SetupTaskCollectionManager(_taskCollectionManager);
 
-        _eventArgs = CreateDragDropEventArgs(_viewService.GetKanbanTask(), _viewService.GetCurrentPosition(), _viewService.GetMouseInsideControl());
-        _animationHandler.Setup(_viewService.GetKanbanBoard(), _eventArgs.KanbanTask.Height);
+        _orginalTask = _viewService.CoreTask;
+        _previewTask = new Task();
+        _previewTask.CopyFrom(_orginalTask);
+        _previewTask.IsPreview = true;
+        _previewTask.OrderValue -= 9;
 
+        _taskCollectionManager.RemoveTask(_orginalTask, updateOrder: true);
+        _taskCollectionManager.AddTask(_previewTask, updateOrder: false);
 
-
-        _tasks.Remove(_eventArgs.Task);
-        UpdateTaskOrder();
-        _tasks.Add(_eventArgs.PreviewTask!);
-
-        _previewCanvas.Children.Add(_eventArgs.DraggedKanbanTask);
-        Canvas.SetLeft(_eventArgs.DraggedKanbanTask, _eventArgs.KanbanTask.TopLeft.X);
-        Canvas.SetTop(_eventArgs.DraggedKanbanTask, _eventArgs.KanbanTask.TopLeft.Y);
+        _viewService.ShowDraggedKanbanTask();
     }
 
     public void UpdateDragDrop()
     {
-        double offsetX = _viewService.GetCurrentPosition().X - _eventArgs.InitialPosition.X;
-        double offsetY = _viewService.GetCurrentPosition().Y - _eventArgs.InitialPosition.Y;
+        ArgumentNullException.ThrowIfNull(_viewService);
 
-        _eventArgs.DraggedKanbanTask.RenderTransform = new TranslateTransform(offsetX, offsetY);
+        double offsetX = _viewService.CurrentPosition.X - _viewService.InitialPosition.X;
+        double offsetY = _viewService.CurrentPosition.Y - _viewService.InitialPosition.Y;
+        _viewService.UpdateDraggedKanbanTask(offsetX, offsetY);
 
-        Point topLeft = _eventArgs.DraggedKanbanTask.TransformToAncestor(Application.Current.MainWindow).Transform(new Point(0, 0));
-        ControlDimensions draggedTaskCords = new ControlDimensions
+
+        if (_viewService.IsDraggedKanbanTaskOutsideKanbanBoard() && _previewTask != null)
         {
-            TopLeft = topLeft,
-            Height = _eventArgs.DraggedKanbanTask.ActualHeight,
-            Width = _eventArgs.DraggedKanbanTask.ActualWidth,
+            _taskCollectionManager.RemoveTask(_previewTask, updateOrder: false);
+            _animationHandler.HandleAnimation(_previewTask, null);
+            _previewTask = null;
+            return;
+        }
+
+        if (!_viewService.IsDraggedKanbanTaskOverKandanColumn(out var columnStatus, out var itemTotalHeight, out var offsetInsideColumn))
+        {
+            return;
+        }
+
+        Task newPreviewTask = new Task
+        {
+            Status = columnStatus,
+            OrderValue = CalculateOrderValue(itemTotalHeight, offsetInsideColumn),
+            IsPreview = true
         };
 
-        if (IsOutsideKanbanBoard(draggedTaskCords, _eventArgs) && _eventArgs.PreviewTask != null)
+        if (_previewTask is null)
         {
-            _tasks.Remove(_eventArgs.PreviewTask);
-            _animationHandler.HandleAnimation(_eventArgs.PreviewTask, null);
-            _eventArgs.PreviewTask = null;
+            _previewTask = newPreviewTask;
+            _taskCollectionManager.AddTask(_previewTask, updateOrder: false);
+            _animationHandler.HandleAnimation(null, _previewTask);
             return;
         }
 
-        var kanbanColumn = Application.Current.MainWindow.FindUnderlyingControl<KanbanColumn, KanbanTask>(draggedTaskCords.Center, _eventArgs.DraggedKanbanTask);
-        if (kanbanColumn is null)
+        if (!PreviewTaskPositionChanged(_previewTask, newPreviewTask))
         {
             return;
         }
 
-        UpdatePreviewTask(kanbanColumn, draggedTaskCords.Center);
+        _taskCollectionManager.RemoveTask(_previewTask, updateOrder: false);
+        _taskCollectionManager.AddTask(newPreviewTask, updateOrder: false);
+        _animationHandler.HandleAnimation(_previewTask, newPreviewTask);
+        _previewTask = newPreviewTask;
     }
 
     public void StopDragDrop()
     {
-        _isStarted = false;
+        ArgumentNullException.ThrowIfNull(_viewService);
+        ArgumentNullException.ThrowIfNull(_orginalTask);
 
-        if (_eventArgs.PreviewTask != null)
+        IsStarted = false;
+
+        if(_previewTask != null)
         {
-            _tasks.Remove(_eventArgs.PreviewTask);
-            _eventArgs.Task.Status = _eventArgs.PreviewTask.Status;
-            _eventArgs.Task.OrderValue = _eventArgs.PreviewTask.OrderValue;
+            _taskCollectionManager.RemoveTask(_previewTask, updateOrder: false);
+            _orginalTask.Status = _previewTask.Status;
+            _orginalTask.OrderValue = _previewTask.OrderValue;
         }
 
-        _tasks.Add(_eventArgs.Task);
-        UpdateTaskOrder();
-        _previewCanvas.Children.Remove(_eventArgs.DraggedKanbanTask);
-
-        _eventArgs = null;
+        _taskCollectionManager.AddTask(_orginalTask, updateOrder: true);
+        _viewService.HideDraggedKanbanTask();
     }
 
-    private static bool IsOutsideKanbanBoard(ControlDimensions draggedTaskCords, DragDropEventArgs eventArgs)
+    private int CalculateOrderValue(double itemTotalHeight, double offsetInsideColumn)
     {
-        return draggedTaskCords.Center.X < eventArgs.KanbanBoard.TopLeft.X
-            || draggedTaskCords.Center.X > eventArgs.KanbanBoard.RightBottom.X
-            || draggedTaskCords.Center.Y < eventArgs.KanbanColumn.TopLeft.Y
-            || draggedTaskCords.Center.Y > eventArgs.KanbanColumn.RightBottom.Y;
+        int orderValue = 1 + (int)Math.Floor(offsetInsideColumn / itemTotalHeight) * 10;
+        if (orderValue < 0)
+        {
+            orderValue = 1;
+        }
+        return orderValue;
     }
 
-    private void UpdateTaskOrder()
+    private static bool PreviewTaskPositionChanged(Task oldTask, Task newTask)
     {
-        foreach (ETaskStatus taskStatus in Enum.GetValues(typeof(ETaskStatus)))
-        {
-            UpdateColumnOrder(taskStatus);
-        }
-
-        void UpdateColumnOrder(ETaskStatus status)
-        {
-            var orderedTasks = _tasks.Where(t => t.Status == status).OrderBy(t => t.OrderValue).ToList();
-            int currentOrder = 10;
-
-            foreach (var item in orderedTasks)
-            {
-                item.OrderValue = currentOrder;
-                currentOrder += 10;
-            }
-        }
-    }
-
-    private DragDropEventArgs CreateDragDropEventArgs(KanbanTask kanbanTask, Point initialPosition, Point mouseInsideControl)
-    {
-        ArgumentNullException.ThrowIfNull(kanbanTask);
-
-        KanbanColumn? kanbanColumn = kanbanTask.FindAncestor<KanbanColumn>();
-        if (kanbanColumn is null)
-        {
-            throw new ArgumentException($"Missing {nameof(KanbanColumn)} parent control.");
-        }
-
-        KanbanBoard? kanbanBoard = kanbanColumn.FindAncestor<KanbanBoard>();
-        if (kanbanBoard is null)
-        {
-            throw new ArgumentException($"Missing {nameof(KanbanBoard)} parent control.");
-        }
-
-        if (kanbanTask.DataContext is not Task task)
-        {
-            throw new ArgumentException($"DataContext of {nameof(KanbanTask)} is not {typeof(Task).Name}.");
-        }
-
-        var topLeft = kanbanTask.TransformToAncestor(Application.Current.MainWindow).Transform(new Point(0, 0));
-
-        Task previewTask = ShallowCopy(task);
-        previewTask.IsPreview = true;
-        previewTask.OrderValue = task.OrderValue - 9;
-
-        KanbanTask previewKanbanTask = ShallowCopy(kanbanTask);
-
-        DragDropEventArgs eventArgs = new DragDropEventArgs
-        {
-            InitialPosition = initialPosition,
-            MouseInsideControl = mouseInsideControl,
-
-            MainWindow = new ControlDimensions
-            {
-                TopLeft = new Point(0, 0),
-                Width = Application.Current.MainWindow.ActualWidth,
-                Height = Application.Current.MainWindow.ActualHeight,
-            },
-            KanbanBoard = new ControlDimensions
-            {
-                TopLeft = kanbanBoard.TransformToAncestor(Application.Current.MainWindow).Transform(new Point(0, 0)),
-                Width = kanbanBoard.ActualWidth,
-                Height = kanbanBoard.ActualHeight,
-            },
-            KanbanColumn = new ControlDimensions
-            {
-                TopLeft = kanbanColumn.TransformToAncestor(Application.Current.MainWindow).Transform(new Point(0, 0)),
-                Width = kanbanColumn.ActualWidth,
-                Height = kanbanColumn.ActualHeight,
-            },
-            KanbanTask = new ControlDimensions
-            {
-                TopLeft = kanbanTask.TransformToAncestor(Application.Current.MainWindow).Transform(new Point(0, 0)),
-                Width = kanbanTask.ActualWidth,
-                Height = kanbanTask.ActualHeight,
-            },
-
-            Task = task,
-
-            PreviewTask = previewTask,
-            DraggedKanbanTask = previewKanbanTask
-        };
-
-        return eventArgs;
-    }
-
-    private Task ShallowCopy(Task origin)
-    {
-        Task task = new Task();
-        task.CopyFrom(origin);
-        return task;
-    }
-
-    private KanbanTask ShallowCopy(KanbanTask origin)
-    {
-        KanbanTask kanbanTask = new KanbanTask();
-
-        kanbanTask.CopyFrom(origin);
-        kanbanTask.Width = origin.ActualWidth;
-        kanbanTask.Height = origin.ActualHeight;
-        kanbanTask.DataContext = origin.DataContext;
-
-        return kanbanTask;
-    }
-
-    private void UpdatePreviewTask(KanbanColumn kanbanColumn, Point point)
-    {
-        KanbanTask kanbanTask = _eventArgs!.DraggedKanbanTask;
-
-        ListView? columnListView = kanbanColumn.FindChild<ListView>();
-        if (columnListView is null)
-        {
-            throw new ArgumentException($"{nameof(KanbanColumn)} doesnt have {nameof(ListView)} child control.");
-        }
-
-        Point columnTopLeft = columnListView.TransformToAncestor(Application.Current.MainWindow).Transform(new Point(0, 0));
-
-        double itemHeight = kanbanTask.ActualHeight + kanbanTask.Margin.Top + kanbanTask.Margin.Bottom;
-        double offsetY = point.Y - columnTopLeft.Y;
-
-        int orderValue = 1 + (int)Math.Floor(offsetY / itemHeight) * 10;
-        if (orderValue < 0) orderValue = 1;
-
-        //Trace.WriteLine($"Order value: {orderValue}");
-
-        Task previewTask = new Task
-        {
-            Status = kanbanColumn.TaskStatus,
-            OrderValue = orderValue,
-            IsPreview = true
-        };
-
-        if (_eventArgs.PreviewTask is null)
-        {
-            _eventArgs.PreviousPreviewTask = previewTask;
-            _eventArgs.PreviewTask = previewTask;
-
-            _tasks.Add(previewTask);
-            _animationHandler.HandleAnimation(null, previewTask);
-
-            return;
-        }
-
-        if (_eventArgs.PreviewTask.OrderValue != previewTask.OrderValue
-            || _eventArgs.PreviewTask.Status != previewTask.Status)
-        {
-            _tasks.Remove(_eventArgs.PreviewTask);
-
-            _eventArgs.PreviousPreviewTask = _eventArgs.PreviewTask;
-            _eventArgs.PreviewTask = previewTask;
-
-            _tasks.Add(previewTask);
-
-            _animationHandler.HandleAnimation(_eventArgs.PreviousPreviewTask, _eventArgs.PreviewTask);
-        }
+        return oldTask.OrderValue != newTask.OrderValue
+            || oldTask.Status != newTask.Status;
     }
 }

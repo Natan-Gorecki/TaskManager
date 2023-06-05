@@ -1,6 +1,7 @@
 ﻿using System.Windows;
 using System.Windows.Input;
 using TaskManager.Client.View.Kanban;
+using TaskManager.Core.Models;
 
 namespace TaskManager.Client.Behaviors.KanbanBoardDragDrop;
 
@@ -15,9 +16,18 @@ public interface IViewService
     #endregion
 
     #region IDragDropHandler
+    Point InitialPosition { get; }
+    Point CurrentPosition { get; }
+    Point MouseInsideControl { get; }
+    Task CoreTask { get; }
+    void ShowDraggedKanbanTask();
+    void UpdateDraggedKanbanTask(double offsetX, double offsetY);
+    void HideDraggedKanbanTask();
+    bool IsDraggedKanbanTaskOutsideKanbanBoard();
+    bool IsDraggedKanbanTaskOverKandanColumn(out ETaskStatus columnStatus, out double itemTotalHeight, out double offsetInsideColumn);
+    void SetupTaskCollectionManager(ITaskCollectionManager taskCollectionManager);
+
     KanbanBoard GetKanbanBoard();
     KanbanTask GetKanbanTask();
-    Point GetCurrentPosition();
-    Point GetMouseInsideControl();
     #endregion
 }

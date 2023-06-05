@@ -4,7 +4,7 @@ namespace TaskManager.Client.Model;
 
 public class ControlDimensions
 {
-    public Point TopLeft { get; set; }
+    public required Point TopLeft { get; init; }
     public Point Center
     { 
         get => new Point((int)(TopLeft.X + (Width / 2)), (int)(TopLeft.Y + (Height / 2)));  
@@ -14,6 +14,6 @@ public class ControlDimensions
         get => new Point((int)(TopLeft.X + Width), (int)(TopLeft.Y + Height));
     }
 
-    public double Width { get; set; }
-    public double Height { get; set; }
+    public required double Width { get; init; }
+    public required double Height { get; init; }
 }

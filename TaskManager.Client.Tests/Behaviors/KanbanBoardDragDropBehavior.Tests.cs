@@ -15,7 +15,6 @@ internal class KanbanBoardDragDropBehaviorTests
     Mock<IViewService> _viewServiceMock = null!;
 
     KanbanBoard _kanbanBoard = null!;
-    KanbanTask _kanbanTask = null!;
     MouseButtonEventArgs _mouseButtonEventArgs = null!;
     MouseEventArgs _mouseEventArgs = null!;
 
@@ -34,7 +33,6 @@ internal class KanbanBoardDragDropBehaviorTests
             .BuildServiceProvider());
 
         _kanbanBoard = new KanbanBoard();
-        _kanbanTask = new KanbanTask();
         _mouseButtonEventArgs = new MouseButtonEventArgs(Mouse.PrimaryDevice, 0, MouseButton.Left);
         _mouseEventArgs = new MouseEventArgs(Mouse.PrimaryDevice, 0);
 

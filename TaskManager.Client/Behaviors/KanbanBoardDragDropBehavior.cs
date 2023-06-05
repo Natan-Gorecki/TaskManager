@@ -1,8 +1,6 @@
 ﻿using Microsoft.Xaml.Behaviors;
-using System.Windows;
 using System.Windows.Input;
 using TaskManager.Client.Behaviors.KanbanBoardDragDrop;
-using TaskManager.Client.Extensions;
 using TaskManager.Client.View.Kanban;
 
 namespace TaskManager.Client.Behaviors;

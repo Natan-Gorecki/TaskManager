@@ -1,6 +1,7 @@
 ﻿using Microsoft.Extensions.Logging;
 using System;
-using System.Linq;
+using System.Collections.Generic;
+using System.Windows;
 using TaskManager.Client.View.Kanban;
 using TaskManager.Core.Models;
 
@@ -9,19 +10,15 @@ namespace TaskManager.Client.Behaviors.KanbanBoardDragDrop;
 public class AnimationHandler : IAnimationHandler
 {
     private ILogger<AnimationHandler> _logger = App.IoC.GetRequiredService<ILogger<AnimationHandler>>();
-    private IAnimationStorage _animationStorage = App.IoC.GetRequiredService<IAnimationStorage>();
+    private IViewService? _viewService;
 
-    private KanbanBoard? _kanbanBoard;
-    private double? _kanbanTaskHeight;
+    private readonly TimeSpan _animationDuration = TimeSpan.FromSeconds(0.15);
+    private Dictionary<int, Animation> _ongoingAnimations = new();
 
     public void Setup(IViewService viewService)
     {
-        ArgumentNullException.ThrowIfNull(kanbanBoard);
-
-        _animationStorage.Setup(kanbanTaskHeight);
-
-        _kanbanBoard = kanbanBoard;
-        _kanbanTaskHeight = kanbanTaskHeight;
+        ArgumentNullException.ThrowIfNull(viewService);
+        _viewService = viewService;
     }
 
     public void HandleAnimation(Task? oldTask, Task? newTask)
@@ -62,33 +59,64 @@ public class AnimationHandler : IAnimationHandler
         }
     }
 
-    private void AddAnimations(Direction direction, ETaskStatus? columnStatus, Predicate<Task> predicate)
+    public void AddAnimation(Animation animation)
     {
-        ArgumentNullException.ThrowIfNull(_kanbanBoard);
-        ArgumentNullException.ThrowIfNull(_kanbanTaskHeight);
+        ArgumentNullException.ThrowIfNull(_viewService);
 
-        KanbanColumn? kanbanColumn = _kanbanBoard.KanbanColumns
-            .Where(column => column.TaskStatus == columnStatus)
-            .FirstOrDefault();
-
-        ArgumentNullException.ThrowIfNull(kanbanColumn);
-
-        foreach (var kanbanTask in kanbanColumn.KanbanTasks)
+        RemoveIfCompleted(animation.Id, animation.KanbanTask);
+        if (!_ongoingAnimations.TryGetValue(animation.Id, out Animation? ongoingAnimation))
         {
-            if (kanbanTask.DataContext is not Task coreTask)
-            {
-                return;
-            }
+            _viewService.StartDoubleAnimation(animation.KanbanTask, animation.From, _animationDuration);
+            _ongoingAnimations.Add(animation.Id, animation);
+            return;
+        }
 
+        if (animation.Direction == ongoingAnimation.Direction)
+        {
+            return;
+        }
+
+        double yTransform = _viewService.GetCurrentTransformValue(animation.KanbanTask);
+        double totalHeight = _viewService.KanbanTaskTotalHeight;
+        double from = yTransform >= 0 ? yTransform - totalHeight : yTransform + totalHeight;
+        Duration duration = Math.Abs(from / totalHeight) * _animationDuration;
+
+        _viewService.StartDoubleAnimation(animation.KanbanTask, from, duration);
+
+        _ongoingAnimations.Remove(animation.Id);
+        _ongoingAnimations.Add(animation.Id, animation);
+    }
+
+    private void AddAnimations(Direction direction, ETaskStatus columnStatus, Predicate<Task> predicate)
+    {
+        ArgumentNullException.ThrowIfNull(_viewService);
+        #warning SUS
+        var totalHeight = _viewService.KanbanTaskTotalHeight;
+
+        _viewService.ForEachKanbanTask(columnStatus, (kanbanTask, coreTask) =>
+        {
             if (predicate(coreTask))
             {
-                _animationStorage.AddAnimation(new Animation
+                AddAnimation(new Animation
                 {
+                    Id = coreTask.Id,
                     KanbanTask = kanbanTask,
-                    From = direction == Direction.Top ? _kanbanTaskHeight.Value : -_kanbanTaskHeight.Value,
+                    From = direction == Direction.Top ? totalHeight : -totalHeight,
                     Direction = direction
                 });
             }
+        });
+    }
+
+    private void RemoveIfCompleted(int taskId, KanbanTask kanbanTask)
+    {
+        ArgumentNullException.ThrowIfNull(_viewService);
+
+        if (_viewService.GetCurrentTransformValue(kanbanTask) != 0)
+        {
+            return;
         }
+
+        _ongoingAnimations.Remove(taskId);
     }
 }

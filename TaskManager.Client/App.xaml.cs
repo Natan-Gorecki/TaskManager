@@ -21,7 +21,7 @@ namespace TaskManager.Client
 
             serviceCollection.AddTransient<IDragDropHandler, DragDropHandler>();
             serviceCollection.AddTransient<IAnimationHandler, AnimationHandler>();
-            serviceCollection.AddTransient<IAnimationStorage, AnimationStorage>();
+            serviceCollection.AddTransient<ITaskCollectionManager, TaskCollectionManager>();
             serviceCollection.AddTransient<IViewService, ViewService>();
 
             IoC = Ioc.Default;

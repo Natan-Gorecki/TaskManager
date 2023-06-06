@@ -16,8 +16,8 @@ public class Task : ObservableObject, ITask
         set => SetProperty(ref _name, value);
     }
 
-    private ETaskStatus? _status;
-    public ETaskStatus? Status 
+    private ETaskStatus _status;
+    public ETaskStatus Status 
     {
         get => _status;
         set => SetProperty(ref _status, value);

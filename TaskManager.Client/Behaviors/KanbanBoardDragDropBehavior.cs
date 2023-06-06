@@ -26,7 +26,7 @@ public class KanbanBoardDragDropBehavior : Behavior<KanbanBoard>
 
     public void KanbanBoard_PreviewMouseDown(object sender, MouseButtonEventArgs e)
     {
-        if (_dragDropHandler.IsStarted())
+        if (_dragDropHandler.IsStarted)
         {
             return;
         }
@@ -43,7 +43,7 @@ public class KanbanBoardDragDropBehavior : Behavior<KanbanBoard>
 
     public void KanbanBoard_PreviewMouseMove(object sender, MouseEventArgs e)
     {
-        if (!_dragDropHandler.IsStarted())
+        if (!_dragDropHandler.IsStarted)
         {
             return;
         }
@@ -54,7 +54,7 @@ public class KanbanBoardDragDropBehavior : Behavior<KanbanBoard>
 
     public void KanbanBoard_PreviewMouseUp(object sender, MouseButtonEventArgs e)
     {
-        if (!_dragDropHandler.IsStarted())
+        if (!_dragDropHandler.IsStarted)
         {
             return;
         }

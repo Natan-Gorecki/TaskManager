@@ -21,7 +21,7 @@
     <i:Interaction.Behaviors>
         <behaviours:KanbanBoardDragDropBehavior />
     </i:Interaction.Behaviors>
-    
+
     <Grid>
         <ListView x:Name="columnsListView" ItemsSource="{Binding Source={StaticResource ETaskStatusValues}}"
                   HorizontalContentAlignment="Stretch"

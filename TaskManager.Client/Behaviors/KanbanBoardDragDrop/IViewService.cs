@@ -1,4 +1,5 @@
-﻿using System.Windows;
+﻿using System;
+using System.Windows;
 using System.Windows.Input;
 using TaskManager.Client.View.Kanban;
 using TaskManager.Core.Models;
@@ -20,14 +21,18 @@ public interface IViewService
     Point CurrentPosition { get; }
     Point MouseInsideControl { get; }
     Task CoreTask { get; }
-    void ShowDraggedKanbanTask();
+    void ShowDraggedKanbanTask(double x, double y);
     void UpdateDraggedKanbanTask(double offsetX, double offsetY);
     void HideDraggedKanbanTask();
     bool IsDraggedKanbanTaskOutsideKanbanBoard();
-    bool IsDraggedKanbanTaskOverKandanColumn(out ETaskStatus columnStatus, out double itemTotalHeight, out double offsetInsideColumn);
+    bool IsDraggedKanbanTaskOverKandanColumn(out ETaskStatus columnStatus, out double offsetInsideColumn);
     void SetupTaskCollectionManager(ITaskCollectionManager taskCollectionManager);
+    #endregion
 
-    KanbanBoard GetKanbanBoard();
-    KanbanTask GetKanbanTask();
+    #region IAnimationHandler
+    double KanbanTaskTotalHeight { get; }
+    void ForEachKanbanTask(ETaskStatus columnStatus, Action<KanbanTask, Task> action);
+    void StartDoubleAnimation(KanbanTask kanbanTask, double from, Duration duration);
+    double GetCurrentTransformValue(KanbanTask kanbanTask);
     #endregion
 }

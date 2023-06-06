@@ -4,7 +4,8 @@ namespace TaskManager.Client.Behaviors.KanbanBoardDragDrop;
 
 public class Animation
 {
-    public required KanbanTask KanbanTask { get; set; }
-    public required double From { get; set; }
-    public required Direction Direction { get; set; }
+    public required int Id { get; init; }
+    public required KanbanTask KanbanTask { get; init; }
+    public required double From { get; init; }
+    public required Direction Direction { get; init; }
 }

@@ -4,5 +4,5 @@ public interface ITask
 {
     public int Id { get; }
     public string? Name { get; }
-    public ETaskStatus? Status { get; }
+    public ETaskStatus Status { get; }
 }

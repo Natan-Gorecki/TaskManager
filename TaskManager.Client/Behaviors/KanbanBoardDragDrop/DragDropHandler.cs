@@ -33,7 +33,9 @@ public class DragDropHandler : IDragDropHandler
         _taskCollectionManager.RemoveTask(_orginalTask, updateOrder: true);
         _taskCollectionManager.AddTask(_previewTask, updateOrder: false);
 
-        _viewService.ShowDraggedKanbanTask();
+        double x = _viewService.InitialPosition.X - _viewService.MouseInsideControl.X;
+        double y = _viewService.InitialPosition.Y - _viewService.MouseInsideControl.Y;
+        _viewService.ShowDraggedKanbanTask(x, y);
     }
 
     public void UpdateDragDrop()
@@ -53,11 +55,12 @@ public class DragDropHandler : IDragDropHandler
             return;
         }
 
-        if (!_viewService.IsDraggedKanbanTaskOverKandanColumn(out var columnStatus, out var itemTotalHeight, out var offsetInsideColumn))
+        if (!_viewService.IsDraggedKanbanTaskOverKandanColumn(out var columnStatus, out var offsetInsideColumn))
         {
             return;
         }
 
+        var itemTotalHeight = _viewService.KanbanTaskTotalHeight;
         Task newPreviewTask = new Task
         {
             Status = columnStatus,
@@ -102,7 +105,7 @@ public class DragDropHandler : IDragDropHandler
         _viewService.HideDraggedKanbanTask();
     }
 
-    private int CalculateOrderValue(double itemTotalHeight, double offsetInsideColumn)
+    private static int CalculateOrderValue(double itemTotalHeight, double offsetInsideColumn)
     {
         int orderValue = 1 + (int)Math.Floor(offsetInsideColumn / itemTotalHeight) * 10;
         if (orderValue < 0)

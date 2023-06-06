@@ -1,8 +1,10 @@
 ﻿using System;
+using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Media;
+using System.Windows.Media.Animation;
 using TaskManager.Client.Extensions;
 using TaskManager.Client.Model;
 using TaskManager.Client.View.Kanban;
@@ -98,7 +100,7 @@ public class ViewService : IViewService
         }
     }
 
-    public void ShowDraggedKanbanTask()
+    public void ShowDraggedKanbanTask(double x, double y)
     {
         ArgumentNullException.ThrowIfNull(_kanbanBoard);
         ArgumentNullException.ThrowIfNull(_kanbanTask);
@@ -110,10 +112,8 @@ public class ViewService : IViewService
         _draggedKanbanTask.DataContext = _kanbanTask.DataContext;
 
         _kanbanBoard.previewCanvas.Children.Add(_draggedKanbanTask);
-
-        var topLeft = _kanbanTask.RelativeToMainWindow();
-        Canvas.SetLeft(_draggedKanbanTask, topLeft.X);
-        Canvas.SetTop(_draggedKanbanTask, topLeft.Y);
+        Canvas.SetLeft(_draggedKanbanTask, x);
+        Canvas.SetTop(_draggedKanbanTask, y);
     }
 
     public void UpdateDraggedKanbanTask(double offsetX, double offsetY)
@@ -151,13 +151,12 @@ public class ViewService : IViewService
         //        || draggedTaskCords.Center.Y > eventArgs.KanbanColumn.RightBottom.Y;
     }
 
-    public bool IsDraggedKanbanTaskOverKandanColumn(out ETaskStatus taskStatus, out double itemTotalHeight, out double offsetInsideColumn)
+    public bool IsDraggedKanbanTaskOverKandanColumn(out ETaskStatus columnStatus, out double offsetInsideColumn)
     {
         ArgumentNullException.ThrowIfNull(_draggedKanbanTask);
         ControlDimensions draggedTaskCords = _draggedKanbanTask.GetControlDimensions();
 
-        taskStatus = default;
-        itemTotalHeight = default;
+        columnStatus = default;
         offsetInsideColumn = default;
 
         var kanbanColumn = Application.Current.MainWindow.FindUnderlyingControl<KanbanColumn, KanbanTask>(draggedTaskCords.Center, _draggedKanbanTask);
@@ -173,8 +172,7 @@ public class ViewService : IViewService
         }
 
         Point columnTopLeft = columnListView.RelativeToMainWindow();
-        taskStatus = kanbanColumn.TaskStatus;
-        itemTotalHeight = _draggedKanbanTask.ActualHeight + _draggedKanbanTask.Margin.Top + _draggedKanbanTask.Margin.Bottom;
+        columnStatus = kanbanColumn.TaskStatus;
         offsetInsideColumn = draggedTaskCords.Center.Y - columnTopLeft.Y;
         return true;
     }
@@ -184,23 +182,56 @@ public class ViewService : IViewService
         ArgumentNullException.ThrowIfNull(_kanbanBoard);
         taskCollectionManager.Setup(_kanbanBoard.TaskCollection);
     }
-
     #endregion
 
-    public KanbanBoard GetKanbanBoard()
+    #region IAnimationHandler
+    public double KanbanTaskTotalHeight 
     {
-        return _kanbanBoard;
+        get
+        {
+            ArgumentNullException.ThrowIfNull(_kanbanTask);
+            return _kanbanTask.ActualHeight + _kanbanTask.Margin.Top + _kanbanTask.Margin.Bottom;
+        }
     }
-    public KanbanTask GetKanbanTask()
+
+    public void ForEachKanbanTask(ETaskStatus columnStatus, Action<KanbanTask, Task> action)
     {
-        return _kanbanTask;
+        ArgumentNullException.ThrowIfNull(_kanbanBoard);
+
+        KanbanColumn? kanbanColumn = _kanbanBoard.KanbanColumns
+            .Where(column => column.TaskStatus == columnStatus)
+            .FirstOrDefault();
+
+        ArgumentNullException.ThrowIfNull(kanbanColumn);
+
+        foreach (var kanbanTask in kanbanColumn.KanbanTasks)
+        {
+            if (kanbanTask.DataContext is not Task coreTask)
+            {
+                return;
+            }
+
+            action(kanbanTask, coreTask);
+        }
     }
-    public Point GetCurrentPosition()
+
+    public void StartDoubleAnimation(KanbanTask kanbanTask, double from, Duration duration)
     {
-        return _currentPosition.Value;
+        var yAnimation = new DoubleAnimation
+        {
+            From = from,
+            To = 0,
+            Duration = duration
+        };
+
+        var transform = new TranslateTransform();
+        kanbanTask.RenderTransform = transform;
+        transform.BeginAnimation(TranslateTransform.YProperty, yAnimation, HandoffBehavior.SnapshotAndReplace);
     }
-    public Point GetMouseInsideControl()
+
+    public double GetCurrentTransformValue(KanbanTask kanbanTask)
     {
-        return _mouseInsideControl.Value;
+        return (double)kanbanTask.RenderTransform.GetValue(TranslateTransform.YProperty);
     }
+    #endregion
 }

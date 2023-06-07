@@ -50,7 +50,7 @@ internal class KanbanBoardDragDropBehaviorTests
     public void PreviewMouseDown_ShouldStartDragDrop()
     {
         // GIVEN
-        _dragDropHandlerMock.Setup(x => x.IsStarted()).Returns(false);
+        _dragDropHandlerMock.SetupGet(x => x.IsStarted).Returns(false);
         _viewServiceMock.Setup(x => x.IsKanbanTaskDragged(_mouseButtonEventArgs)).Returns(true);
 
         var sequence = new MockSequence();
@@ -71,7 +71,7 @@ internal class KanbanBoardDragDropBehaviorTests
     public void PreviewMouseDown_ShouldNotStartDragDrop_WhenDragDropIsStarted()
     {
         // GIVEN
-        _dragDropHandlerMock.Setup(x => x.IsStarted()).Returns(true);
+        _dragDropHandlerMock.Setup(x => x.IsStarted).Returns(true);
 
         // WHEN
         _sut.KanbanBoard_PreviewMouseDown(_kanbanBoard, _mouseButtonEventArgs);
@@ -86,7 +86,7 @@ internal class KanbanBoardDragDropBehaviorTests
     public void PreviewMouseDown_ShouldNotStartDragDrop_WhenDraggedIsNotKanbanTask()
     {
         // GIVEN
-        _dragDropHandlerMock.Setup(x => x.IsStarted()).Returns(false);
+        _dragDropHandlerMock.Setup(x => x.IsStarted).Returns(false);
         _viewServiceMock.Setup(x => x.IsKanbanTaskDragged(_mouseButtonEventArgs)).Returns(false);
 
         // WHEN
@@ -102,7 +102,7 @@ internal class KanbanBoardDragDropBehaviorTests
     public void PreviewMouseMove_ShouldUpdateDragDrop()
     {
         // GIVEN
-        _dragDropHandlerMock.Setup(x => x.IsStarted()).Returns(true);
+        _dragDropHandlerMock.Setup(x => x.IsStarted).Returns(true);
 
         var sequence = new MockSequence();
         _viewServiceMock.InSequence(sequence).Setup(x => x.UpdateMousePosition(_mouseEventArgs));
@@ -120,7 +120,7 @@ internal class KanbanBoardDragDropBehaviorTests
     public void PreviewMouseMove_ShouldNotUpdateDragDrop_WhenDragDropIsNotStarted()
     {
         // GIVEN
-        _dragDropHandlerMock.Setup(x => x.IsStarted()).Returns(false);
+        _dragDropHandlerMock.Setup(x => x.IsStarted).Returns(false);
 
         // WHEN
         _sut.KanbanBoard_PreviewMouseMove(_kanbanBoard, _mouseEventArgs);
@@ -134,7 +134,7 @@ internal class KanbanBoardDragDropBehaviorTests
     public void PreviewMouseUp_ShouldStopDragDrop()
     {
         // GIVEN
-        _dragDropHandlerMock.Setup(x => x.IsStarted()).Returns(true);
+        _dragDropHandlerMock.Setup(x => x.IsStarted).Returns(true);
         _viewServiceMock.Setup(x => x.ReleaseMouseCapture());
         _dragDropHandlerMock.Setup(x => x.StopDragDrop());
 
@@ -150,7 +150,7 @@ internal class KanbanBoardDragDropBehaviorTests
     public void PreviewMouseUp_ShouldNotStopDragDrop_WhenDragDropIsNotStarted()
     {
         // GIVEN
-        _dragDropHandlerMock.Setup(x => x.IsStarted()).Returns(false);
+        _dragDropHandlerMock.Setup(x => x.IsStarted).Returns(false);
 
         // WHEN
         _sut.KanbanBoard_PreviewMouseUp(_kanbanBoard, _mouseButtonEventArgs);

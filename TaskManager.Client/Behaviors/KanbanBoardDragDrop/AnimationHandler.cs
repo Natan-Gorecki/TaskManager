@@ -59,7 +59,7 @@ public class AnimationHandler : IAnimationHandler
         }
     }
 
-    public void AddAnimation(Animation animation)
+    public virtual void AddAnimation(Animation animation)
     {
         ArgumentNullException.ThrowIfNull(_viewService);
 
@@ -90,7 +90,6 @@ public class AnimationHandler : IAnimationHandler
     private void AddAnimations(Direction direction, ETaskStatus columnStatus, Predicate<Task> predicate)
     {
         ArgumentNullException.ThrowIfNull(_viewService);
-        #warning SUS
         var totalHeight = _viewService.KanbanTaskTotalHeight;
 
         _viewService.ForEachKanbanTask(columnStatus, (kanbanTask, coreTask) =>

@@ -1,6 +1,5 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Toolkit.Mvvm.DependencyInjection;
-using System.Runtime.CompilerServices;
 using System.Windows;
 using TaskManager.Client.Behaviors.KanbanBoardDragDrop;
 using TaskManager.Core.Models;

@@ -1,15 +1,11 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Toolkit.Mvvm.DependencyInjection;
-using System.Windows.Input;
-using TaskManager.Client.Behaviors.KanbanBoardDragDrop;
-using TaskManager.Client.Behaviors;
-using TaskManager.Client.View.Kanban;
 using Microsoft.Extensions.Logging;
+using Microsoft.Toolkit.Mvvm.DependencyInjection;
+using TaskManager.Client.Behaviors.KanbanBoardDragDrop;
+using TaskManager.Client.View.Kanban;
 using TaskManager.Core.Models;
-using Task = TaskManager.Core.Models.Task;
-using System.Windows.Controls;
 using TaskManager.Core.Utils;
-using System.Windows;
+using Task = TaskManager.Core.Models.Task;
 
 namespace TaskManager.Client.Tests.Behaviors.KanbanBoardDragDrop;
 

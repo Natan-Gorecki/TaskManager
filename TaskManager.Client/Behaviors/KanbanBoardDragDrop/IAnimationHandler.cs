@@ -1,5 +1,4 @@
-﻿using TaskManager.Client.View.Kanban;
-using TaskManager.Core.Models;
+﻿using TaskManager.Core.Models;
 
 namespace TaskManager.Client.Behaviors.KanbanBoardDragDrop;
 

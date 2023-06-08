@@ -1,10 +1,10 @@
-﻿using System.IO.Packaging;
+﻿using System;
+using System.IO.Packaging;
 using System.Reflection;
-using System;
+using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Markup;
 using System.Windows.Navigation;
-using System.Windows;
 
 namespace TaskManager.Client.Extensions;
 

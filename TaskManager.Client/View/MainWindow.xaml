@@ -1,0 +1,27 @@
+﻿<Window x:Class="TaskManager.Client.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:ui="http://schemas.lepo.co/wpfui/2022/xaml"
+        xmlns:viewModel="clr-namespace:TaskManager.Client.ViewModel"
+        xmlns:kanban="clr-namespace:TaskManager.Client.View.Kanban"
+        mc:Ignorable="d"
+        Title="MainWindow" Height="450" Width="800">
+    <!--ExtendsContentIntoTitleBar="True">-->
+
+    <Window.DataContext>
+        <viewModel:MainWindowViewModel/>
+    </Window.DataContext>
+
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="auto"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+
+        <ui:TitleBar Grid.Row="0" Title="Task Manager"/>
+
+        <kanban:KanbanBoard Grid.Row="1" TaskCollection="{Binding TaskCollection}"/>
+    </Grid>
+</Window>

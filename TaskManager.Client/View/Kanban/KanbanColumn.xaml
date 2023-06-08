@@ -1,0 +1,64 @@
+﻿<UserControl x:Class="TaskManager.Client.View.Kanban.KanbanColumn"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:componentModel="clr-namespace:System.ComponentModel;assembly=WindowsBase"
+             xmlns:converters="clr-namespace:TaskManager.Client.Converters"
+             xmlns:kanban="clr-namespace:TaskManager.Client.View.Kanban"
+             xmlns:utils="clr-namespace:TaskManager.Client.Utils"
+             mc:Ignorable="d"
+             x:Name="kanbanColumn">
+
+    <UserControl.Resources>
+        <CollectionViewSource x:Key="TasksForStatus"
+                              Source="{Binding TaskCollection, ElementName=kanbanColumn}"
+                              Filter="TaskCollection_StatusFilter">
+            <CollectionViewSource.SortDescriptions>
+                <componentModel:SortDescription PropertyName="OrderValue" Direction="Ascending"/>
+            </CollectionViewSource.SortDescriptions>
+        </CollectionViewSource>
+        
+        <DataTemplate x:Key="KanbanTaskTemplate">
+            <kanban:KanbanTask />
+        </DataTemplate>
+        <DataTemplate x:Key="PreviewKanbanTaskTemplate">
+            <kanban:PreviewKanbanTask />
+        </DataTemplate>
+        <utils:KanbanTaskTemplateSelector x:Key="KanbanTaskTemplateSelector"
+                                  ItemTemplate="{StaticResource KanbanTaskTemplate}"
+                                  ItemPreviewTemplate="{StaticResource PreviewKanbanTaskTemplate}" />
+
+        <converters:BooleanToZIndexConverter x:Key="BooleanToZIndexConverter"/>
+    </UserControl.Resources>
+    
+    <Grid VerticalAlignment="Stretch" HorizontalAlignment="Stretch">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="auto"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+
+        <TextBlock Background="DarkGray" Text="{Binding TaskStatus, ElementName=kanbanColumn}"
+                   Grid.Row="0"/>
+
+        <ListView Grid.Row="1" HorizontalContentAlignment="Stretch"
+                  ItemsSource="{Binding Source={StaticResource TasksForStatus}}"
+                  ItemTemplateSelector="{Binding Source={StaticResource KanbanTaskTemplateSelector}}">
+            <ListView.ItemContainerStyle>
+                <Style TargetType="ListViewItem">
+                    <Setter Property="Panel.ZIndex" Value="{Binding IsPreview, Converter={StaticResource BooleanToZIndexConverter}}" />
+                </Style>
+            </ListView.ItemContainerStyle>
+            <ListBox.Template>
+                <ControlTemplate TargetType="{x:Type ListBox}">
+                    <Border Background="{TemplateBinding Background}"
+                            BorderBrush="{TemplateBinding BorderBrush}"
+                            BorderThickness="{TemplateBinding BorderThickness}">
+                        <ItemsPresenter/>
+                    </Border>
+                </ControlTemplate>
+            </ListBox.Template>
+        </ListView>
+    </Grid>
+    
+</UserControl>

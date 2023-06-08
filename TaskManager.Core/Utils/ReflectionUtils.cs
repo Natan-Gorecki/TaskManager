@@ -13,12 +13,10 @@ public static class ReflectionUtils
 
     public static TValue GetFieldValue<TValue>(Type type, object? obj, string fieldName)
     {
-        var value = type.GetField(fieldName, AllFlags)?.GetValue(obj);
-        if(value is null)
-        {
-            throw new NullReferenceException($"Cannot find {fieldName} field.");
-        }
-        return (TValue)value;
+        var fieldInfo = type.GetField(fieldName, AllFlags)
+            ?? throw new ArgumentNullException($"Cannot find {fieldName} field.");
+        
+        return (TValue)fieldInfo.GetValue(obj)!;
     }
 
     public static void SetFieldValue<TValue>(object obj, string fieldName, TValue value)

@@ -7,6 +7,9 @@
     </ApplicationDefinition>
   </ItemGroup>
   <ItemGroup>
+    <Compile Update="View\Backlog\BacklogList.xaml.cs">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Update="View\Kanban\KanbanBoard.xaml.cs">
       <SubType>Code</SubType>
     </Compile>
@@ -21,6 +24,9 @@
     </Compile>
   </ItemGroup>
   <ItemGroup>
+    <Page Update="View\Backlog\BacklogList.xaml">
+      <SubType>Designer</SubType>
+    </Page>
     <Page Update="View\Kanban\KanbanBoard.xaml">
       <SubType>Designer</SubType>
     </Page>

@@ -111,7 +111,10 @@ public class ViewService : IViewService
         _draggedKanbanTask.Height = _kanbanTask.ActualHeight;
         _draggedKanbanTask.DataContext = _kanbanTask.DataContext;
 
-        _kanbanBoard.previewCanvas.Children.Add(_draggedKanbanTask);
+        var mainWindow = Application.Current.MainWindow as MainWindow;
+        ArgumentNullException.ThrowIfNull(mainWindow);
+        
+        mainWindow.mainWindowCanvas.Children.Add(_draggedKanbanTask);
         Canvas.SetLeft(_draggedKanbanTask, x);
         Canvas.SetTop(_draggedKanbanTask, y);
     }
@@ -128,7 +131,10 @@ public class ViewService : IViewService
         ArgumentNullException.ThrowIfNull(_kanbanBoard);
         ArgumentNullException.ThrowIfNull(_draggedKanbanTask);
 
-        _kanbanBoard.previewCanvas.Children.Remove(_draggedKanbanTask);
+        var mainWindow = Application.Current.MainWindow as MainWindow;
+        ArgumentNullException.ThrowIfNull(mainWindow);
+
+        mainWindow.mainWindowCanvas.Children.Remove(_draggedKanbanTask);
     }
 
     public bool IsDraggedKanbanTaskOutsideKanbanBoard()

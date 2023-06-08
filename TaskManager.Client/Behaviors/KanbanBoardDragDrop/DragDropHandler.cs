@@ -6,8 +6,8 @@ namespace TaskManager.Client.Behaviors.KanbanBoardDragDrop;
 
 public class DragDropHandler : IDragDropHandler
 {
-    private IAnimationHandler _animationHandler = App.IoC.GetRequiredService<IAnimationHandler>();
-    private ITaskCollectionManager _taskCollectionManager = App.IoC.GetRequiredService<ITaskCollectionManager>();
+    private readonly IAnimationHandler _animationHandler = App.IoC.GetRequiredService<IAnimationHandler>();
+    private readonly ITaskCollectionManager _taskCollectionManager = App.IoC.GetRequiredService<ITaskCollectionManager>();
     private IViewService? _viewService;
 
     private Task? _orginalTask;
@@ -61,7 +61,7 @@ public class DragDropHandler : IDragDropHandler
         }
 
         var itemTotalHeight = _viewService.KanbanTaskTotalHeight;
-        Task newPreviewTask = new Task
+        var newPreviewTask = new Task
         {
             Status = columnStatus,
             OrderValue = CalculateOrderValue(itemTotalHeight, offsetInsideColumn),

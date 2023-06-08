@@ -20,7 +20,7 @@ internal class AnimationHandlerTests
     private Mock<AnimationHandler> _sutMock = null!;
     private AnimationHandler _sut = null!;
 
-    private List<KanbanTask> _kabanTaskList = new List<KanbanTask>();
+    private List<KanbanTask> _kabanTaskList = null!;
 
     [SetUp]
     public void SetUp()
@@ -34,12 +34,15 @@ internal class AnimationHandlerTests
             .AddTransient(provider => _viewServiceMock.Object)
             .BuildServiceProvider());
 
-        _sutMock = new Mock<AnimationHandler>(MockBehavior.Strict);
-        _sutMock.CallBase = true;
+        _sutMock = new Mock<AnimationHandler>(MockBehavior.Strict)
+        {
+            CallBase = true
+        };
         
         _sut = _sutMock.Object;
         _sut.Setup(_viewServiceMock.Object);
-        
+
+        _kabanTaskList = new();
         AddKanbanTaskToList(ETaskStatus.Waiting, 10, 1);
         AddKanbanTaskToList(ETaskStatus.Waiting, 20, 2);
         AddKanbanTaskToList(ETaskStatus.Waiting, 30, 3);
@@ -55,7 +58,7 @@ internal class AnimationHandlerTests
     public void HandleAnimation_ShouldAddAnimations_WhenTaskIsAdded()
     {
         // GIVEN
-        Task? newTask = new Task
+        Task? newTask = new()
         {
             Status = ETaskStatus.InProgress,
             OrderValue = 11
@@ -78,7 +81,7 @@ internal class AnimationHandlerTests
     public void HandleAnimation_ShouldAddAnimations_WhenTaskIsRemoved()
     {
         // GIVEN
-        Task? oldTask = new Task
+        Task? oldTask = new()
         {
             Status = ETaskStatus.InProgress,
             OrderValue = 11
@@ -112,12 +115,12 @@ internal class AnimationHandlerTests
     public void HandleAnimation_ShouldAddAnimations_WhenTaskChangedColumn()
     {
         // GIVEN
-        Task? oldTask = new Task
+        Task? oldTask = new()
         {
             Status = ETaskStatus.InProgress,
             OrderValue = 11
         };
-        Task? newTask = new Task
+        Task? newTask = new()
         {
             Status = ETaskStatus.Completed,
             OrderValue = 11
@@ -143,12 +146,12 @@ internal class AnimationHandlerTests
     public void HandleAnimation_ShouldAddAnimations_WhenTaskIsMovedToTop()
     {
         // GIVEN
-        Task? oldTask = new Task
+        Task? oldTask = new()
         {
             Status = ETaskStatus.InProgress,
             OrderValue = 11
         };
-        Task? newTask = new Task
+        Task? newTask = new()
         {
             Status = ETaskStatus.InProgress,
             OrderValue = 1
@@ -170,12 +173,12 @@ internal class AnimationHandlerTests
     public void HandleAnimation_ShouldAddAnimations_WhenTaskIsMovedToBottom()
     {
         // GIVEN
-        Task? oldTask = new Task
+        Task? oldTask = new()
         {
             Status = ETaskStatus.InProgress,
             OrderValue = 11
         };
-        Task? newTask = new Task
+        Task? newTask = new()
         {
             Status = ETaskStatus.InProgress,
             OrderValue = 21
@@ -406,15 +409,17 @@ internal class AnimationHandlerTests
 
     private void AddKanbanTaskToList(ETaskStatus columnStatus, int order, int id)
     {
-        Task coreTask = new Task
+        Task coreTask = new()
         {
             Id = id,
             Status = columnStatus,
             OrderValue = order
         };
 
-        KanbanTask kanbanTask = new KanbanTask();
-        kanbanTask.DataContext = coreTask;
+        var kanbanTask = new KanbanTask
+        {
+            DataContext = coreTask
+        };
 
         _kabanTaskList.Add(kanbanTask);
     }

@@ -9,11 +9,11 @@ namespace TaskManager.Client.Behaviors.KanbanBoardDragDrop;
 
 public class AnimationHandler : IAnimationHandler
 {
-    private ILogger<AnimationHandler> _logger = App.IoC.GetRequiredService<ILogger<AnimationHandler>>();
+    private readonly ILogger<AnimationHandler> _logger = App.IoC.GetRequiredService<ILogger<AnimationHandler>>();
     private IViewService? _viewService;
 
     private readonly TimeSpan _animationDuration = TimeSpan.FromSeconds(0.15);
-    private Dictionary<int, Animation> _ongoingAnimations = new();
+    private readonly Dictionary<int, Animation> _ongoingAnimations = new();
 
     public void Setup(IViewService viewService)
     {

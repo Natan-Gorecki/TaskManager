@@ -143,12 +143,6 @@ public class ViewService : IViewService
             || draggedTaskCords.Center.X > kanbanBoardCords.RightBottom.X
             || draggedTaskCords.Center.Y < kanbanBoardCords.TopLeft.Y
             || draggedTaskCords.Center.Y > kanbanBoardCords.RightBottom.Y;
-
-        #warning SUS
-        //return draggedTaskCords.Center.X < eventArgs.KanbanBoard.TopLeft.X
-        //        || draggedTaskCords.Center.X > eventArgs.KanbanBoard.RightBottom.X
-        //        || draggedTaskCords.Center.Y < eventArgs.KanbanColumn.TopLeft.Y
-        //        || draggedTaskCords.Center.Y > eventArgs.KanbanColumn.RightBottom.Y;
     }
 
     public bool IsDraggedKanbanTaskOverKandanColumn(out ETaskStatus columnStatus, out double offsetInsideColumn)

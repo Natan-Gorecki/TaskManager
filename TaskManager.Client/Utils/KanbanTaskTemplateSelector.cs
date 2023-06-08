@@ -6,10 +6,10 @@ namespace TaskManager.Client.Utils;
 
 internal class KanbanTaskTemplateSelector : DataTemplateSelector
 {
-    public DataTemplate ItemTemplate { get; set; }
-    public DataTemplate ItemPreviewTemplate { get; set; }
+    public DataTemplate? ItemTemplate { get; set; }
+    public DataTemplate? ItemPreviewTemplate { get; set; }
 
-    public override DataTemplate SelectTemplate(object item, DependencyObject container)
+    public override DataTemplate? SelectTemplate(object item, DependencyObject container)
     {
         if (item is Task task && task.IsPreview == true)
         {

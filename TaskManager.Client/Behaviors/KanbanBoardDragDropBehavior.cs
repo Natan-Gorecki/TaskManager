@@ -7,8 +7,8 @@ namespace TaskManager.Client.Behaviors;
 
 public class KanbanBoardDragDropBehavior : Behavior<KanbanBoard>
 {
-    IDragDropHandler _dragDropHandler = App.IoC.GetRequiredService<IDragDropHandler>();
-    IViewService _viewService = App.IoC.GetRequiredService<IViewService>();
+    private readonly IDragDropHandler _dragDropHandler = App.IoC.GetRequiredService<IDragDropHandler>();
+    private readonly IViewService _viewService = App.IoC.GetRequiredService<IViewService>();
 
     protected override void OnAttached()
     {

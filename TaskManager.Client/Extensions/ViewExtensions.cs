@@ -120,7 +120,7 @@ internal static class ViewExtensions
         where TResult : FrameworkElement
         where TDrag : FrameworkElement
     {
-        FrameworkElement? dependencyObject = null;
+        TResult? dependencyObject = null;
 
         VisualTreeHelper.HitTest(visual, null, new HitTestResultCallback(result =>
         {
@@ -134,21 +134,22 @@ internal static class ViewExtensions
 
             FrameworkElement? underlyingControl = visualHit as FrameworkElement;
 
-            if (underlyingControl != null)
+            if (underlyingControl is null)
             {
-                dependencyObject = underlyingControl;
-                return HitTestResultBehavior.Stop;
+                return HitTestResultBehavior.Continue;
             }
 
-            return HitTestResultBehavior.Continue;
+            var resultControl = underlyingControl.FindControlOrAncestor<TResult>();
+            if (resultControl is null)
+            {
+                return HitTestResultBehavior.Continue;
+            }
+
+            dependencyObject = resultControl;
+            return HitTestResultBehavior.Stop;
         }), new PointHitTestParameters(point));
 
-        if (dependencyObject is null)
-        {
-            return null;
-        }
-
-        return dependencyObject.FindControlOrAncestor<TResult>();
+        return dependencyObject;
     }
 
     public static IEnumerable<T> FindChildren<T>(this DependencyObject parent)

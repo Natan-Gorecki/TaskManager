@@ -170,6 +170,7 @@ public class ViewService : IViewService
         var kanbanColumn = Application.Current.MainWindow.FindUnderlyingControl<KanbanColumn, KanbanTask>(draggedTaskCords.Center, _draggedKanbanTask);
         if (kanbanColumn is null)
         {
+            _logger.LogTrace("Dragged KanbanTask is not over KanbanColumn.");
             return false;
         }
 

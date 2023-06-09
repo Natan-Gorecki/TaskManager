@@ -25,6 +25,11 @@ public class ViewService : IViewService
     KanbanTask? _draggedKanbanTask;
 
     #region KanbanBoard DragDrop Behavior
+    public bool IsSingleClick(MouseButtonEventArgs e)
+    {
+        return e.ClickCount == 1;
+    }
+
     public bool IsKanbanTaskDragged(MouseButtonEventArgs e)
     {
         KanbanTask? kanbanTask = (e.OriginalSource as DependencyObject)?.FindControlOrAncestor<KanbanTask>();

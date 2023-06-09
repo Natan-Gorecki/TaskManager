@@ -9,6 +9,7 @@ namespace TaskManager.Client.Behaviors.KanbanBoardDragDrop;
 public interface IViewService
 {
     #region KanbanBoard DragDrop Behavior
+    bool IsSingleClick(MouseButtonEventArgs e);
     bool IsKanbanTaskDragged(MouseButtonEventArgs e);
     void Setup(KanbanBoard kanbanBoard, MouseButtonEventArgs e);
     void CaptureMouse();

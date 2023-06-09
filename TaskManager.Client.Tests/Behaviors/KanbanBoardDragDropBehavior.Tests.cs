@@ -50,7 +50,8 @@ internal class KanbanBoardDragDropBehaviorTests
     public void PreviewMouseDown_ShouldStartDragDrop()
     {
         // GIVEN
-        _dragDropHandlerMock.SetupGet(x => x.IsStarted).Returns(false);
+        _dragDropHandlerMock.Setup(x => x.IsStarted).Returns(false);
+        _viewServiceMock.Setup(x => x.IsSingleClick(_mouseButtonEventArgs)).Returns(true);
         _viewServiceMock.Setup(x => x.IsKanbanTaskDragged(_mouseButtonEventArgs)).Returns(true);
 
         var sequence = new MockSequence();
@@ -83,10 +84,27 @@ internal class KanbanBoardDragDropBehaviorTests
     }
 
     [Test]
+    public void PreviewMouseDown_ShouldNotStartDragDrop_WhenItIsNotSingleClick()
+    {
+        // GIVEN
+        _dragDropHandlerMock.Setup(x => x.IsStarted).Returns(false);
+        _viewServiceMock.Setup(x => x.IsSingleClick(_mouseButtonEventArgs)).Returns(false);
+
+        // WHEN
+        _sut.KanbanBoard_PreviewMouseDown(_kanbanBoard, _mouseButtonEventArgs);
+
+        // THEN
+        _viewServiceMock.Verify(x => x.Setup(_kanbanBoard, _mouseButtonEventArgs), Times.Never);
+        _viewServiceMock.Verify(x => x.CaptureMouse(), Times.Never);
+        _dragDropHandlerMock.Verify(x => x.StartDragDrop(_viewServiceMock.Object), Times.Never);
+    }
+
+    [Test]
     public void PreviewMouseDown_ShouldNotStartDragDrop_WhenDraggedIsNotKanbanTask()
     {
         // GIVEN
         _dragDropHandlerMock.Setup(x => x.IsStarted).Returns(false);
+        _viewServiceMock.Setup(x => x.IsSingleClick(_mouseButtonEventArgs)).Returns(true);
         _viewServiceMock.Setup(x => x.IsKanbanTaskDragged(_mouseButtonEventArgs)).Returns(false);
 
         // WHEN

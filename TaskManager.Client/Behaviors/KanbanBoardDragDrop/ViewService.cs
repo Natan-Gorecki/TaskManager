@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Microsoft.Extensions.Logging;
+using System;
 using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
@@ -15,6 +16,8 @@ namespace TaskManager.Client.Behaviors.KanbanBoardDragDrop;
 
 public class ViewService : IViewService
 {
+    ILogger<ViewService> _logger = App.IoC.GetRequiredService<ILogger<ViewService>>();
+
     KanbanBoard? _kanbanBoard;
     KanbanTask? _kanbanTask;
 

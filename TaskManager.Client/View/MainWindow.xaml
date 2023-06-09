@@ -5,25 +5,21 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:ui="http://schemas.lepo.co/wpfui/2022/xaml"
         xmlns:viewModel="clr-namespace:TaskManager.Client.ViewModel"
-        xmlns:kanban="clr-namespace:TaskManager.Client.View.Kanban"
         xmlns:backlog="clr-namespace:TaskManager.Client.View.Backlog"
+        xmlns:kanban="clr-namespace:TaskManager.Client.View.Kanban"
+        xmlns:modal="clr-namespace:TaskManager.Client.View.Modal"
         mc:Ignorable="d"
         Title="Task Manager" Height="450" Width="800">
     <!--ExtendsContentIntoTitleBar="True">-->
 
+    
+    
     <Window.DataContext>
         <viewModel:MainWindowViewModel/>
     </Window.DataContext>
-
+    
     <Grid>
-        <Grid.RowDefinitions>
-            <RowDefinition Height="auto"/>
-            <RowDefinition Height="*"/>
-        </Grid.RowDefinitions>
-
-        <ui:TitleBar Grid.Row="0" Title="Task Manager"/>
-
-        <TabControl TabStripPlacement="Left" Grid.Row="1" >
+        <TabControl TabStripPlacement="Left">
             <TabItem Header="Board">
                 <kanban:KanbanBoard TaskCollection="{Binding TaskCollection}" />
             </TabItem>
@@ -31,6 +27,8 @@
                 <backlog:BacklogList TaskCollection="{Binding TaskCollection}" />
             </TabItem>
         </TabControl>
+
+        <modal:ModalPage x:Name="modalPage" Visibility="Collapsed"/>
 
         <Canvas x:Name="mainWindowCanvas" Grid.RowSpan="2" />
     </Grid>

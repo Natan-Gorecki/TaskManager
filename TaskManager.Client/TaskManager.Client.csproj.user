@@ -25,6 +25,9 @@
     <Compile Update="View\Kanban\PreviewKanbanTask.xaml.cs">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Update="View\Modal\ModalPage.xaml.cs">
+      <SubType>Code</SubType>
+    </Compile>
   </ItemGroup>
   <ItemGroup>
     <Page Update="View\Backlog\BacklogItem.xaml">
@@ -46,6 +49,9 @@
       <SubType>Designer</SubType>
     </Page>
     <Page Update="View\MainWindow.xaml">
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Update="View\Modal\ModalPage.xaml">
       <SubType>Designer</SubType>
     </Page>
   </ItemGroup>

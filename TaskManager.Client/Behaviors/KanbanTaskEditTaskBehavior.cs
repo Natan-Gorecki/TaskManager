@@ -20,7 +20,11 @@ internal class KanbanTaskEditTaskBehavior : Behavior<KanbanTask>
 
     private void KanbanTask_MouseDoubleClick(object sender, MouseButtonEventArgs e)
     {
-        Window window = new Window();
-        window.ShowDialog();
+        if (Application.Current.MainWindow is not MainWindow mainWindow)
+        {
+            return;
+        }
+
+        mainWindow.modalPage.Visibility = Visibility.Visible;
     }
 }

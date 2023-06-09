@@ -6,8 +6,9 @@
         xmlns:ui="http://schemas.lepo.co/wpfui/2022/xaml"
         xmlns:viewModel="clr-namespace:TaskManager.Client.ViewModel"
         xmlns:kanban="clr-namespace:TaskManager.Client.View.Kanban"
+        xmlns:backlog="clr-namespace:TaskManager.Client.View.Backlog"
         mc:Ignorable="d"
-        Title="MainWindow" Height="450" Width="800">
+        Title="Task Manager" Height="450" Width="800">
     <!--ExtendsContentIntoTitleBar="True">-->
 
     <Window.DataContext>
@@ -22,6 +23,15 @@
 
         <ui:TitleBar Grid.Row="0" Title="Task Manager"/>
 
-        <kanban:KanbanBoard Grid.Row="1" TaskCollection="{Binding TaskCollection}"/>
+        <TabControl TabStripPlacement="Left" Grid.Row="1" >
+            <TabItem Header="Board">
+                <kanban:KanbanBoard TaskCollection="{Binding TaskCollection}" />
+            </TabItem>
+            <TabItem Header="Backlog">
+                <backlog:BacklogList TaskCollection="{Binding TaskCollection}" />
+            </TabItem>
+        </TabControl>
+
+        <Canvas x:Name="mainWindowCanvas" Grid.RowSpan="2" />
     </Grid>
 </Window>

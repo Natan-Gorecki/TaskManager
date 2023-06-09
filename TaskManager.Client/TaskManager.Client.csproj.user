@@ -30,6 +30,9 @@
     </Compile>
   </ItemGroup>
   <ItemGroup>
+    <Page Update="Resources\Icons\Icons.xaml">
+      <SubType>Designer</SubType>
+    </Page>
     <Page Update="View\Backlog\BacklogItem.xaml">
       <SubType>Designer</SubType>
     </Page>

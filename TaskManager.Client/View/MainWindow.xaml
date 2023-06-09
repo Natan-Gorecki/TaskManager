@@ -9,6 +9,7 @@
         xmlns:kanban="clr-namespace:TaskManager.Client.View.Kanban"
         xmlns:modal="clr-namespace:TaskManager.Client.View.Modal"
         mc:Ignorable="d"
+        UseLayoutRounding="True"
         Title="Task Manager" Height="450" Width="800">
     <!--ExtendsContentIntoTitleBar="True">-->
 

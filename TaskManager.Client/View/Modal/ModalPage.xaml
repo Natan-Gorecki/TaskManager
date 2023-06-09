@@ -26,10 +26,14 @@
             <Border.Effect>
                 <DropShadowEffect BlurRadius="20" ShadowDepth="10" />
             </Border.Effect>
-            
+
             <Grid>
-                <Button Content="Close" Click="CloseModalPage"/>
-                <ContentPresenter Content="{TemplateBinding Content}" />
+                <Button Click="CloseModalPage" HorizontalAlignment="Right" VerticalAlignment="Top"
+                        Margin="2" Padding="2" Height="20" Width="20" BorderThickness="0"
+                        Content="{StaticResource icon_close_16}"
+                        Background="Transparent" />
+
+                <!--<ContentPresenter />-->
             </Grid>
         </Border>
     </Grid>

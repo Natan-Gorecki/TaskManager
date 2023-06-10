@@ -29,7 +29,9 @@
             </TabItem>
         </TabControl>
 
-        <modal:ModalPage x:Name="modalPage" Visibility="Collapsed"/>
+        <modal:ModalPage x:Name="modalPage" Visibility="Collapsed">
+            <modal:EditTaskControl />
+        </modal:ModalPage>
 
         <Canvas x:Name="mainWindowCanvas" Grid.RowSpan="2" />
     </Grid>

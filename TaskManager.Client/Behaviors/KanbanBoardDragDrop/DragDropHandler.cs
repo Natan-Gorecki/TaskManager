@@ -1,6 +1,5 @@
 ﻿using System;
 using TaskManager.Core.Extensions;
-using TaskManager.Core.Models;
 
 namespace TaskManager.Client.Behaviors.KanbanBoardDragDrop;
 

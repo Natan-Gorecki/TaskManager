@@ -1,11 +1,8 @@
 ﻿using Microsoft.Extensions.Logging;
 using Microsoft.Xaml.Behaviors;
 using System.Windows.Input;
-using System.Windows;
-using TaskManager.Client.View.Backlog;
-using TaskManager.Core.Models;
-using TaskManager.Client.View.Modal;
 using TaskManager.Client.Utils;
+using TaskManager.Client.View.Backlog;
 
 namespace TaskManager.Client.Behaviors;
 

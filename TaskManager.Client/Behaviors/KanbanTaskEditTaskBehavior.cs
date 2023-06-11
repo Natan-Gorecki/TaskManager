@@ -1,11 +1,8 @@
 ﻿using Microsoft.Extensions.Logging;
 using Microsoft.Xaml.Behaviors;
-using System.Windows;
 using System.Windows.Input;
 using TaskManager.Client.Utils;
 using TaskManager.Client.View.Kanban;
-using TaskManager.Client.View.Modal;
-using TaskManager.Core.Models;
 
 namespace TaskManager.Client.Behaviors;
 

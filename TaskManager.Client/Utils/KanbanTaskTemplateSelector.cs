@@ -1,6 +1,5 @@
 ﻿using System.Windows;
 using System.Windows.Controls;
-using TaskManager.Core.Models;
 
 namespace TaskManager.Client.Utils;
 

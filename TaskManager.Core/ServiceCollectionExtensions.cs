@@ -8,13 +8,10 @@ public static class ServiceCollectionExtensions
 {
     public static IServiceCollection AddTasksManager(this IServiceCollection serviceColletion, ETaskManagerType managerType = ETaskManagerType.JsonFile)
     {
-        switch (managerType)
+        return managerType switch
         {
-            case ETaskManagerType.JsonFile:
-                return serviceColletion.AddSingleton<ITaskManager, TaskManager_JsonFile>();
-            case ETaskManagerType.SqlLite:
-            default:
-                throw new NotImplementedException($"TaskManager {managerType} type is not implemented");
-        }
+            ETaskManagerType.JsonFile => serviceColletion.AddSingleton<ITaskManager, TaskManager_JsonFile>(),
+            _ => throw new NotImplementedException($"TaskManager {managerType} type is not implemented"),
+        };
     }
 }

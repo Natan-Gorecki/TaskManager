@@ -1,8 +1,6 @@
 ﻿using System.Collections.ObjectModel;
 using System.Windows;
 using System.Windows.Controls;
-using TaskManager.Client.View.Kanban;
-using TaskManager.Core.Models;
 
 namespace TaskManager.Client.View.Backlog;
 

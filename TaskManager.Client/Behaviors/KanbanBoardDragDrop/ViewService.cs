@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Microsoft.Extensions.Logging;
+using System;
 using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
@@ -15,6 +16,8 @@ namespace TaskManager.Client.Behaviors.KanbanBoardDragDrop;
 
 public class ViewService : IViewService
 {
+    private readonly ILogger<ViewService> _logger = App.IoC.GetRequiredService<ILogger<ViewService>>();
+
     KanbanBoard? _kanbanBoard;
     KanbanTask? _kanbanTask;
 
@@ -25,6 +28,11 @@ public class ViewService : IViewService
     KanbanTask? _draggedKanbanTask;
 
     #region KanbanBoard DragDrop Behavior
+    public bool IsSingleClick(MouseButtonEventArgs e)
+    {
+        return e.ClickCount == 1;
+    }
+
     public bool IsKanbanTaskDragged(MouseButtonEventArgs e)
     {
         KanbanTask? kanbanTask = (e.OriginalSource as DependencyObject)?.FindControlOrAncestor<KanbanTask>();
@@ -162,6 +170,7 @@ public class ViewService : IViewService
         var kanbanColumn = Application.Current.MainWindow.FindUnderlyingControl<KanbanColumn, KanbanTask>(draggedTaskCords.Center, _draggedKanbanTask);
         if (kanbanColumn is null)
         {
+            _logger.LogTrace("Dragged KanbanTask is not over KanbanColumn.");
             return false;
         }
 

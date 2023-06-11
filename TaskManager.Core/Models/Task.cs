@@ -23,6 +23,13 @@ public class Task : ObservableObject, ITask
         set => SetProperty(ref _status, value);
     }
 
+    private string? _description;
+    public string? Description
+    {
+        get => _description;
+        set => SetProperty(ref _description, value);
+    }
+
     private int _orderValue;
     public int OrderValue 
     {

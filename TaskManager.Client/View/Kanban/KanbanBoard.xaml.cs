@@ -3,7 +3,6 @@ using System.Collections.ObjectModel;
 using System.Windows;
 using System.Windows.Controls;
 using TaskManager.Client.Extensions;
-using TaskManager.Core.Models;
 
 namespace TaskManager.Client.View.Kanban;
 

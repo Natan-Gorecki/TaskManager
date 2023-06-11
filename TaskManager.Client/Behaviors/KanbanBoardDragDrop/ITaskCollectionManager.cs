@@ -1,5 +1,4 @@
 ﻿using System.Collections.Generic;
-using TaskManager.Core.Models;
 
 namespace TaskManager.Client.Behaviors.KanbanBoardDragDrop;
 

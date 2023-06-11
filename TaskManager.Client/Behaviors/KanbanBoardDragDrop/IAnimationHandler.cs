@@ -1,6 +1,4 @@
-﻿using TaskManager.Core.Models;
-
-namespace TaskManager.Client.Behaviors.KanbanBoardDragDrop;
+﻿namespace TaskManager.Client.Behaviors.KanbanBoardDragDrop;
 
 public interface IAnimationHandler
 {

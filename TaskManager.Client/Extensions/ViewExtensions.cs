@@ -23,7 +23,7 @@ internal static class ViewExtensions
         ArgumentNullException.ThrowIfNull(dependencyObject);
 
         DependencyObject depObj = dependencyObject;
-        while ((depObj != null) && !(depObj is T))
+        while ((depObj != null) && depObj is not T)
         {
             depObj = VisualTreeHelper.GetParent(depObj);
         }
@@ -107,8 +107,7 @@ internal static class ViewExtensions
             return null;
         }
 
-        var dependencyObject = hitResult.VisualHit as DependencyObject;
-        if (dependencyObject is null)
+        if (hitResult.VisualHit is not DependencyObject dependencyObject)
         {
             return null;
         }
@@ -120,7 +119,7 @@ internal static class ViewExtensions
         where TResult : FrameworkElement
         where TDrag : FrameworkElement
     {
-        FrameworkElement? dependencyObject = null;
+        TResult? dependencyObject = null;
 
         VisualTreeHelper.HitTest(visual, null, new HitTestResultCallback(result =>
         {
@@ -132,23 +131,22 @@ internal static class ViewExtensions
                 return HitTestResultBehavior.Continue;
             }
 
-            FrameworkElement? underlyingControl = visualHit as FrameworkElement;
-
-            if (underlyingControl != null)
+            if (visualHit is not FrameworkElement underlyingControl)
             {
-                dependencyObject = underlyingControl;
-                return HitTestResultBehavior.Stop;
+                return HitTestResultBehavior.Continue;
             }
 
-            return HitTestResultBehavior.Continue;
+            var resultControl = underlyingControl.FindControlOrAncestor<TResult>();
+            if (resultControl is null)
+            {
+                return HitTestResultBehavior.Continue;
+            }
+
+            dependencyObject = resultControl;
+            return HitTestResultBehavior.Stop;
         }), new PointHitTestParameters(point));
 
-        if (dependencyObject is null)
-        {
-            return null;
-        }
-
-        return dependencyObject.FindControlOrAncestor<TResult>();
+        return dependencyObject;
     }
 
     public static IEnumerable<T> FindChildren<T>(this DependencyObject parent)

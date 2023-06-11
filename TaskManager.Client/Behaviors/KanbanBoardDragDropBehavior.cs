@@ -31,6 +31,11 @@ public class KanbanBoardDragDropBehavior : Behavior<KanbanBoard>
             return;
         }
 
+        if (!_viewService.IsSingleClick(e))
+        {
+            return;
+        }
+
         if (!_viewService.IsKanbanTaskDragged(e))
         {
             return;

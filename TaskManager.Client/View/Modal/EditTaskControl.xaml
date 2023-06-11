@@ -4,6 +4,7 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:System="clr-namespace:System;assembly=mscorlib"
+             xmlns:controls="clr-namespace:TaskManager.Client.Controls"
              xmlns:core="clr-namespace:TaskManager.Core.Models;assembly=TaskManager.Core"
              mc:Ignorable="d" 
              d:DesignHeight="450" d:DesignWidth="800"
@@ -61,7 +62,8 @@
                 </Grid.RowDefinitions>
 
                 <Label Content="Description" FontSize="16" FontWeight="DemiBold" Grid.Row="0" />
-                <RichTextBox Margin="0,0,10,0" FontSize="14" Grid.Row="1" />
+                <controls:ExtendedRichTextBox DocumentXaml="{Binding Description}"
+                    Margin="0,0,10,0" FontSize="14" Grid.Row="1" />
             </Grid>
 
             <!-- Content Left Side -->

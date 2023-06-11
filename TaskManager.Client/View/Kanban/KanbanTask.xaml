@@ -6,6 +6,7 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"  
              xmlns:behaviours="clr-namespace:TaskManager.Client.Behaviors"
              xmlns:core="clr-namespace:TaskManager.Core.Models;assembly=TaskManager.Core"
+             xmlns:resx="clr-namespace:TaskManager.Client.Resources"
              mc:Ignorable="d"
              d:DataContext="{d:DesignInstance Type=core:Task, IsDesignTimeCreatable=True}">
 
@@ -28,20 +29,40 @@
                 <ColumnDefinition Width="*"/>
             </Grid.ColumnDefinitions>
 
-            <TextBlock Text="Id:"
-                       Grid.Row="0" Grid.Column="0"/>
-            <TextBlock Text="Name:"
-                       Grid.Row="1" Grid.Column="0"/>
-            <TextBlock Text="Status:"
-                       Grid.Row="2" Grid.Column="0"/>
-            <TextBlock Text="Order:"
-                       Grid.Row="3" Grid.Column="0"/>
-            
+            <TextBlock Grid.Row="0" Grid.Column="0">
+                <TextBlock.Text>
+                    <MultiBinding StringFormat="{}{0}:">
+                        <Binding Source="{x:Static resx:Resources.Id}"/>
+                    </MultiBinding>
+                </TextBlock.Text>
+            </TextBlock>
+            <TextBlock Grid.Row="1" Grid.Column="0">
+                <TextBlock.Text>
+                    <MultiBinding StringFormat="{}{0}:">
+                        <Binding Source="{x:Static resx:Resources.Name}"/>
+                    </MultiBinding>
+                </TextBlock.Text>
+            </TextBlock>
+            <TextBlock Grid.Row="2" Grid.Column="0">
+                <TextBlock.Text>
+                    <MultiBinding StringFormat="{}{0}:">
+                        <Binding Source="{x:Static resx:Resources.Status}"/>
+                    </MultiBinding>
+                </TextBlock.Text>
+            </TextBlock>
+            <TextBlock Grid.Row="3" Grid.Column="0">
+                <TextBlock.Text>
+                    <MultiBinding StringFormat="{}{0}:">
+                        <Binding Source="{x:Static resx:Resources.Order}"/>
+                    </MultiBinding>
+                </TextBlock.Text>
+            </TextBlock>
+
             <TextBlock Text="{Binding Id}"
                        Grid.Row="0" Grid.Column="1"/>
             <TextBlock Text="{Binding Name}"
                        Grid.Row="1" Grid.Column="1"/>
-            <TextBlock Text="{Binding Status}"
+            <TextBlock Text="{Binding Status, Converter={StaticResource TaskStatusToStringConverter}}"
                        Grid.Row="2" Grid.Column="1"/>
             <TextBlock Text="{Binding OrderValue}"
                        Grid.Row="3" Grid.Column="1"/>

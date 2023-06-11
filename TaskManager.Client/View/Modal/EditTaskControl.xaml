@@ -6,17 +6,10 @@
              xmlns:System="clr-namespace:System;assembly=mscorlib"
              xmlns:controls="clr-namespace:TaskManager.Client.Controls"
              xmlns:core="clr-namespace:TaskManager.Core.Models;assembly=TaskManager.Core"
+             xmlns:resx="clr-namespace:TaskManager.Client.Resources"
              mc:Ignorable="d" 
              d:DesignHeight="450" d:DesignWidth="800"
              d:DataContext="{d:DesignInstance Type=core:Task, IsDesignTimeCreatable=True}">
-
-    <UserControl.Resources>
-        <ObjectDataProvider x:Key="TaskStatuses" MethodName="GetValues" ObjectType="{x:Type System:Enum}">
-            <ObjectDataProvider.MethodParameters>
-                <x:Type TypeName="core:ETaskStatus" />
-            </ObjectDataProvider.MethodParameters>
-        </ObjectDataProvider>
-    </UserControl.Resources>
 
     <Grid>
         <Grid.RowDefinitions>
@@ -61,7 +54,7 @@
                     <RowDefinition Height="*" />
                 </Grid.RowDefinitions>
 
-                <Label Content="Description" FontSize="16" FontWeight="DemiBold" Grid.Row="0" />
+                <Label Content="{x:Static resx:Resources.Description}" FontSize="16" FontWeight="DemiBold" Grid.Row="0" />
                 <controls:ExtendedRichTextBox DocumentXaml="{Binding Description}"
                     Margin="0,0,10,0" FontSize="14" Grid.Row="1" />
             </Grid>
@@ -74,9 +67,15 @@
                     <RowDefinition Height="*" />
                 </Grid.RowDefinitions>
 
-                <Label Content="Status" FontSize="16" FontWeight="DemiBold" Grid.Row="0" />
-                <ComboBox ItemsSource="{Binding Source={StaticResource TaskStatuses}}" SelectedValue="{Binding Status}"
-                          Grid.Row="1" Grid.Column="1"/>
+                <Label Content="{x:Static resx:Resources.Status}" FontSize="16" FontWeight="DemiBold" Grid.Row="0" />
+                <ComboBox ItemsSource="{Binding Status, Converter={StaticResource EnumToCollectionConverter}}" SelectedValue="{Binding Status}"
+                          Grid.Row="1" Grid.Column="1">
+                    <ComboBox.ItemTemplate>
+                        <DataTemplate>
+                            <ContentPresenter Content="{Binding Converter={StaticResource TaskStatusToStringConverter}}" />
+                        </DataTemplate>
+                    </ComboBox.ItemTemplate>
+                </ComboBox>
             </Grid>
             
         </Grid>
@@ -92,7 +91,8 @@
                     Grid.Column="1" >
                 <StackPanel Orientation="Horizontal" Margin="10,0,10,0">
                     <ContentControl Content="{StaticResource icon_save_16}" />
-                    <Label Margin="5,0,0,0" Padding="0" Foreground="WhiteSmoke">Save</Label>
+                    <Label Content="{x:Static resx:Resources.Save}"
+                           Margin="5,0,0,0" Padding="0" Foreground="WhiteSmoke" />
                 </StackPanel>
             </Button>
         </Grid>

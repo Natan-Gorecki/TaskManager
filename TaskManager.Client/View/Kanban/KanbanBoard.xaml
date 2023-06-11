@@ -9,7 +9,7 @@
              x:Name="kanbanBoard">
 
     <UserControl.Resources>
-        <ObjectDataProvider x:Key="ETaskStatusValues" MethodName="GetValues" ObjectType="{x:Type System:Enum}">
+        <ObjectDataProvider x:Key="TaskStatusValues" MethodName="GetValues" ObjectType="{x:Type System:Enum}">
             <ObjectDataProvider.MethodParameters>
                 <x:Type TypeName="core:ETaskStatus"/>
             </ObjectDataProvider.MethodParameters>
@@ -21,7 +21,7 @@
     </i:Interaction.Behaviors>
 
     <Grid>
-        <ListView x:Name="columnsListView" ItemsSource="{Binding Source={StaticResource ETaskStatusValues}}"
+        <ListView x:Name="columnsListView" ItemsSource="{Binding Source={StaticResource TaskStatusValues}}"
                   HorizontalContentAlignment="Stretch"
                   VerticalContentAlignment="Stretch">
 

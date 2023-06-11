@@ -10,14 +10,14 @@ internal class ObjectExtensions
     public void CopyFrom_ShouldCopyFromITask()
     {
         // GIVEN
-        Models.Task destination = new Models.Task
+        Task destination = new()
         {
             Id = 1,
             Name = "destinationName",
             Status = ETaskStatus.Waiting
         };
 
-        ITask source = new Models.Task
+        Task source = new()
         {
             Id = 2,
             Name = "sourceName",
@@ -40,14 +40,14 @@ internal class ObjectExtensions
     public void CopyFrom_ShouldCopyFromTask()
     {
         // GIVEN
-        Models.Task destination = new Models.Task
+        Task destination = new()
         {
             Id = 1,
             Name = "destinationName",
             Status = ETaskStatus.Waiting
         };
 
-        Models.Task source = new Models.Task
+        Task source = new()
         {
             Id = 2,
             Name = "sourceName",

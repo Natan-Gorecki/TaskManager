@@ -11,8 +11,8 @@ namespace TaskManager.Client.Behaviors;
 
 internal class BacklogItemEditTaskBehavior : Behavior<BacklogItem>
 {
-    ILogger<BacklogItemEditTaskBehavior> _logger = App.IoC.GetRequiredService<ILogger<BacklogItemEditTaskBehavior>>();
-    IModalPageManager _modalPageManager = App.IoC.GetRequiredService<IModalPageManager>();
+    private readonly ILogger<BacklogItemEditTaskBehavior> _logger = App.IoC.GetRequiredService<ILogger<BacklogItemEditTaskBehavior>>();
+    private readonly IModalPageManager _modalPageManager = App.IoC.GetRequiredService<IModalPageManager>();
 
     protected override void OnAttached()
     {

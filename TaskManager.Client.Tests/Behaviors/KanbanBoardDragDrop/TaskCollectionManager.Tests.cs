@@ -114,7 +114,7 @@ internal class TaskCollectionManagerTests
         });
     }
 
-    private void ValidateTask(Task task, int id, int orderValue)
+    private static void ValidateTask(Task task, int id, int orderValue)
     {
         Assert.That(task.Id, Is.EqualTo(id));
         Assert.That(task.OrderValue, Is.EqualTo(orderValue));

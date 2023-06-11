@@ -23,7 +23,7 @@ internal static class ViewExtensions
         ArgumentNullException.ThrowIfNull(dependencyObject);
 
         DependencyObject depObj = dependencyObject;
-        while ((depObj != null) && !(depObj is T))
+        while ((depObj != null) && depObj is not T)
         {
             depObj = VisualTreeHelper.GetParent(depObj);
         }
@@ -107,8 +107,7 @@ internal static class ViewExtensions
             return null;
         }
 
-        var dependencyObject = hitResult.VisualHit as DependencyObject;
-        if (dependencyObject is null)
+        if (hitResult.VisualHit is not DependencyObject dependencyObject)
         {
             return null;
         }
@@ -132,9 +131,7 @@ internal static class ViewExtensions
                 return HitTestResultBehavior.Continue;
             }
 
-            FrameworkElement? underlyingControl = visualHit as FrameworkElement;
-
-            if (underlyingControl is null)
+            if (visualHit is not FrameworkElement underlyingControl)
             {
                 return HitTestResultBehavior.Continue;
             }

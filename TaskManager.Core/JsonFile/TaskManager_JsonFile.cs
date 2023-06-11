@@ -96,7 +96,7 @@ internal class TaskManager_JsonFile : ITaskManager
             File.Create(FilePath);
         }
 
-        FileInfo fileInfo = new FileInfo(FilePath);
+        FileInfo fileInfo = new(FilePath);
         if(fileInfo.Length == 0) 
         {
             _logger.LogDebug($"File {FilePath} is empty. Skipping to parse content.");

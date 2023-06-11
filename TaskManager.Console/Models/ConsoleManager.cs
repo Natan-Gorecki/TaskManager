@@ -6,10 +6,10 @@ using TaskManager.Core.Models;
 
 namespace TaskManager.Console.Models;
 
-internal class ConsoleManager : IConsoleManager
+internal partial class ConsoleManager : IConsoleManager
 {
     private readonly ITaskManager _taskManager;
-    private readonly JsonSerializerOptions _serializerOptions = new JsonSerializerOptions
+    private readonly JsonSerializerOptions _serializerOptions = new()
     {
         WriteIndented = true,
         Converters =
@@ -40,7 +40,8 @@ internal class ConsoleManager : IConsoleManager
         string? commandLine = System.Console.ReadLine();
         ArgumentNullException.ThrowIfNull(commandLine);
 
-        var commandLineArgs = Regex.Matches(commandLine, @"[\""].+?[\""]|[^ ]+")
+        var commandLineArgs = Regex_CommandLineArgs()
+            .Matches(commandLine)
             .Cast<Match>()
             .Select(x => x.Value.Trim('"'))
             .ToList();
@@ -291,4 +292,7 @@ internal class ConsoleManager : IConsoleManager
                 }
         }
     }
+
+    [GeneratedRegex(@"[\""].+?[\""]|[^ ]+")]
+    private static partial Regex Regex_CommandLineArgs();
 }

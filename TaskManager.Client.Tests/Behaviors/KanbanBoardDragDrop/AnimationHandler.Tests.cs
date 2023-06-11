@@ -1,6 +1,6 @@
-﻿using Microsoft.Extensions.DependencyInjection;
+﻿using CommunityToolkit.Mvvm.DependencyInjection;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
-using Microsoft.Toolkit.Mvvm.DependencyInjection;
 using TaskManager.Client.Behaviors.KanbanBoardDragDrop;
 using TaskManager.Client.View.Kanban;
 using TaskManager.Core.Models;

@@ -11,7 +11,7 @@ namespace TaskManager.Client.Controls;
 
 public class ExtendedRichTextBox : RichTextBox
 {
-    private static List<Guid> _recursionProtection = new List<Guid>();
+    private readonly static List<Guid> _recursionProtection = new();
 
     public static readonly DependencyProperty DocumentXamlProperty = DependencyProperty.RegisterAttached(
         "DocumentXaml",

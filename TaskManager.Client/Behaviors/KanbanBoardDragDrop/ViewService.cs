@@ -16,7 +16,7 @@ namespace TaskManager.Client.Behaviors.KanbanBoardDragDrop;
 
 public class ViewService : IViewService
 {
-    ILogger<ViewService> _logger = App.IoC.GetRequiredService<ILogger<ViewService>>();
+    private readonly ILogger<ViewService> _logger = App.IoC.GetRequiredService<ILogger<ViewService>>();
 
     KanbanBoard? _kanbanBoard;
     KanbanTask? _kanbanTask;

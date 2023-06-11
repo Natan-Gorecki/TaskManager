@@ -38,7 +38,7 @@
             <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
 
-        <TextBlock Background="DarkGray" Text="{Binding TaskStatus, ElementName=kanbanColumn}"
+        <TextBlock Background="DarkGray" Text="{Binding TaskStatus, ElementName=kanbanColumn, Converter={StaticResource TaskStatusToStringConverter}}"
                    Grid.Row="0"/>
 
         <ListView Grid.Row="1" HorizontalContentAlignment="Stretch"

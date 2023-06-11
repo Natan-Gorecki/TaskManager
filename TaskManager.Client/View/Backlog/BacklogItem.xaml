@@ -24,7 +24,7 @@
 
             <Label Content="{Binding Id}" Grid.Column="0" />
             <Label Content="{Binding Name}" Grid.Column="1" />
-            <Label Content="{Binding Status}" Grid.Column="2" />
+            <Label Content="{Binding Status, Converter={StaticResource TaskStatusToStringConverter}}" Grid.Column="2" />
         </Grid>
     </Grid>
 </UserControl>

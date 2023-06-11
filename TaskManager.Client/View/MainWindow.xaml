@@ -3,28 +3,27 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        xmlns:ui="http://schemas.lepo.co/wpfui/2022/xaml"
         xmlns:viewModel="clr-namespace:TaskManager.Client.ViewModel"
         xmlns:backlog="clr-namespace:TaskManager.Client.View.Backlog"
         xmlns:kanban="clr-namespace:TaskManager.Client.View.Kanban"
         xmlns:modal="clr-namespace:TaskManager.Client.View.Modal"
+        xmlns:resx="clr-namespace:TaskManager.Client.Resources"
         mc:Ignorable="d"
         UseLayoutRounding="True"
-        Title="Task Manager" Height="450" Width="800">
-    <!--ExtendsContentIntoTitleBar="True">-->
+        Title="{x:Static resx:Resources.TaskManager}" Height="450" Width="800">
 
-    
-    
+
+
     <Window.DataContext>
         <viewModel:MainWindowViewModel/>
     </Window.DataContext>
     
     <Grid>
         <TabControl TabStripPlacement="Left">
-            <TabItem Header="Board">
+            <TabItem Header="{x:Static resx:Resources.Board}">
                 <kanban:KanbanBoard TaskCollection="{Binding TaskCollection}" />
             </TabItem>
-            <TabItem Header="Backlog">
+            <TabItem Header="{x:Static resx:Resources.Backlog}">
                 <backlog:BacklogList TaskCollection="{Binding TaskCollection}" />
             </TabItem>
         </TabControl>

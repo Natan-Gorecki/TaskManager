@@ -6,6 +6,7 @@ using NLog.Extensions.Logging;
 using System.IO;
 using System.Windows;
 using TaskManager.Client.Behaviors.KanbanBoardDragDrop;
+using TaskManager.Client.Utils;
 using TasksManager.Core;
 
 namespace TaskManager.Client
@@ -33,10 +34,14 @@ namespace TaskManager.Client
                     loggingBuidler.AddNLog(configurationRoot);
                 });
 
+            // behaviors
             serviceCollection.AddTransient<IDragDropHandler, DragDropHandler>();
             serviceCollection.AddTransient<IAnimationHandler, AnimationHandler>();
             serviceCollection.AddTransient<ITaskCollectionManager, TaskCollectionManager>();
             serviceCollection.AddTransient<IViewService, ViewService>();
+
+            // utils
+            serviceCollection.AddSingleton<IModalPageManager, ModalPageManager>();
 
             IoC = Ioc.Default;
             IoC.ConfigureServices(serviceCollection.BuildServiceProvider());

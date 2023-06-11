@@ -86,7 +86,7 @@
                 <ColumnDefinition Width="auto" />
             </Grid.ColumnDefinitions>
 
-            <Button Margin="5" Height="25" Padding="0" Background="{DynamicResource DefaultBlue}"
+            <Button Click="SaveTask" Margin="5" Height="25" Padding="0" Background="{DynamicResource DefaultBlue}"
                     Grid.Column="1" >
                 <StackPanel Orientation="Horizontal" Margin="10,0,10,0">
                     <ContentControl Content="{StaticResource icon_save_16}" />

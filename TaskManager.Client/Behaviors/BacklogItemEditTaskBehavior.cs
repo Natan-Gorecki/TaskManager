@@ -4,13 +4,16 @@ using System.Windows.Input;
 using System.Windows;
 using TaskManager.Client.View.Backlog;
 using TaskManager.Core.Models;
+using TaskManager.Client.View.Modal;
+using TaskManager.Client.Utils;
 
 namespace TaskManager.Client.Behaviors;
 
 internal class BacklogItemEditTaskBehavior : Behavior<BacklogItem>
 {
     ILogger<BacklogItemEditTaskBehavior> _logger = App.IoC.GetRequiredService<ILogger<BacklogItemEditTaskBehavior>>();
-    
+    IModalPageManager _modalPageManager = App.IoC.GetRequiredService<IModalPageManager>();
+
     protected override void OnAttached()
     {
         AssociatedObject.MouseDoubleClick += BacklogItem_MouseDoubleClick;
@@ -23,19 +26,12 @@ internal class BacklogItemEditTaskBehavior : Behavior<BacklogItem>
 
     private void BacklogItem_MouseDoubleClick(object sender, MouseButtonEventArgs e)
     {
-        if (Application.Current.MainWindow is not MainWindow mainWindow)
-        {
-            _logger.LogCritical($"MainWindow is null or has different type than {typeof(MainWindow)}");
-            return;
-        }
-
         if (AssociatedObject.DataContext is not Task coreTask)
         {
-            _logger.LogCritical($"KanbanTask data context is null or has different type than {typeof(Task)}");
+            _logger.LogCritical($"BacklogItem data context is null or has different type than {typeof(Task)}");
             return;
         }
 
-        mainWindow.modalPage.ModalPageContent.DataContext = coreTask;
-        mainWindow.modalPage.Visibility = Visibility.Visible;
+        _modalPageManager.EditTask(coreTask);
     }
 }

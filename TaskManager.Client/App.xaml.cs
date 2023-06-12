@@ -2,11 +2,16 @@
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
+using NLog;
 using NLog.Extensions.Logging;
+using System;
 using System.IO;
+using System.Runtime.CompilerServices;
 using System.Windows;
 using TaskManager.Client.Behaviors.KanbanBoardDragDrop;
 using TaskManager.Client.Utils;
+using TaskManager.Core;
+using TaskManager.Core.Models;
 using TasksManager.Core;
 
 namespace TaskManager.Client
@@ -21,30 +26,49 @@ namespace TaskManager.Client
         static App()
         {
 
-            var configurationRoot = new ConfigurationBuilder()
-                .SetBasePath(Directory.GetCurrentDirectory())
-                .AddJsonFile("appsettings.json", false, true)
-                .Build();
+            System.Threading.Thread.CurrentThread.CurrentUICulture = new System.Globalization.CultureInfo("en");
+            //System.Threading.Thread.CurrentThread.CurrentUICulture = new System.Globalization.CultureInfo("pl");
 
-            var serviceCollection = new ServiceCollection()
-                .AddTasksManager()
-                .AddLogging(loggingBuidler =>
-                {
-                    loggingBuidler.ClearProviders();
-                    loggingBuidler.AddNLog(configurationRoot);
-                });
+            try
+            {
 
-            // behaviors
-            serviceCollection.AddTransient<IDragDropHandler, DragDropHandler>();
-            serviceCollection.AddTransient<IAnimationHandler, AnimationHandler>();
-            serviceCollection.AddTransient<ITaskCollectionManager, TaskCollectionManager>();
-            serviceCollection.AddTransient<IViewService, ViewService>();
+#warning Potential memory leak
+                var configurationRoot = new ConfigurationBuilder()
+                    .SetBasePath(Directory.GetCurrentDirectory())
+                    .AddJsonFile("appsettings.json", false, true)
+                    .Build();
 
-            // utils
-            serviceCollection.AddSingleton<IModalPageManager, ModalPageManager>();
+                var serviceCollection = new ServiceCollection()
+                    .AddSingleton<IConfiguration>(configurationRoot)
+                    .AddTasksManager(TaskManagerType.SqlLite)
+                    .AddLogging(loggingBuidler =>
+                    {
+                        loggingBuidler.ClearProviders();
+                        loggingBuidler.AddNLog(configurationRoot);
+                    });
 
-            IoC = Ioc.Default;
-            IoC.ConfigureServices(serviceCollection.BuildServiceProvider());
+                // behaviors
+                serviceCollection.AddTransient<IDragDropHandler, DragDropHandler>();
+                serviceCollection.AddTransient<IAnimationHandler, AnimationHandler>();
+                serviceCollection.AddTransient<ITaskCollectionManager, TaskCollectionManager>();
+                serviceCollection.AddTransient<IViewService, ViewService>();
+
+                // utils
+                serviceCollection.AddSingleton<IModalPageManager, ModalPageManager>();
+
+                IoC = Ioc.Default;
+                IoC.ConfigureServices(serviceCollection.BuildServiceProvider());
+
+                var taskManager = IoC.GetRequiredService<ITaskManager>();
+
+            }
+            catch(Exception ex)
+            {
+                var logger = IoC?.GetRequiredService<ILogger<App>>();
+                logger?.LogCritical(ex, "Application unhandled exception.");
+                LogManager.Flush();
+            }
+            
         }
     }
 }

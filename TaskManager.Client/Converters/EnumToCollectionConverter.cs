@@ -8,7 +8,7 @@ namespace TaskManager.Client.Converters;
 
 public class EnumToCollectionConverter : IValueConverter
 {
-    ILogger<EnumToCollectionConverter> _logger = App.IoC.GetRequiredService<ILogger<EnumToCollectionConverter>>();
+    private readonly ILogger<EnumToCollectionConverter> _logger = App.IoC.GetRequiredService<ILogger<EnumToCollectionConverter>>();
 
     public object? Convert(object value, Type targetType, object parameter, CultureInfo culture)
     {

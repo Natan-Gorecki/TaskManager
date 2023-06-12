@@ -8,7 +8,7 @@ namespace TaskManager.Client.Converters;
 
 public class TaskStatusToStringConverter : IValueConverter
 {
-    ILogger<TaskStatusToStringConverter> _logger = App.IoC.GetRequiredService<ILogger<TaskStatusToStringConverter>>();
+    private readonly ILogger<TaskStatusToStringConverter> _logger = App.IoC.GetRequiredService<ILogger<TaskStatusToStringConverter>>();
     
     public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
     {

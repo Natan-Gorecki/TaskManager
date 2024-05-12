@@ -1,0 +1,6 @@
+# Visual Studio files
+.vs
+
+# Binaries
+[Oo]bj/
+[Bb]in/

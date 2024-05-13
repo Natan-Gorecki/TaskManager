@@ -6,7 +6,7 @@
       "launchBrowser": true,
       "launchUrl": "swagger",
       "environmentVariables": {
-        "ASPNETCORE_ENVIRONMENT": "Development"
+        "ASPNETCORE_ENVIRONMENT": "Console"
       },
       "dotnetRunMessages": true,
       "applicationUrl": "https://localhost:35011;http://localhost:35010"
@@ -16,6 +16,7 @@
       "launchBrowser": true,
       "launchUrl": "{Scheme}://{ServiceHost}:{ServicePort}/swagger",
       "environmentVariables": {
+        "ASPNETCORE_ENVIRONMENT": "Docker",
         "ASPNETCORE_URLS": "https://+:443;http://+:80"
       },
       "publishAllPorts": true,

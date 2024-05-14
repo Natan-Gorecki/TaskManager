@@ -12,6 +12,11 @@ public class TaskManagerContext : DbContext
     internal DbSet<DbTask2Task> Task2Tasks { get; set; }
     internal DbSet<DbTimeEntry> TimeEntries { get; set; }
 
+    protected override void ConfigureConventions(ModelConfigurationBuilder configurationBuilder)
+    {
+        configurationBuilder.Properties<Enum>().HaveConversion<string>();
+    }
+
     public override int SaveChanges()
     {
         var utcNow = DateTime.UtcNow;

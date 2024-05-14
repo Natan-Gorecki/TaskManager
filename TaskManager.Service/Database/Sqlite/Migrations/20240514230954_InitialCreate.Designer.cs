@@ -11,14 +11,14 @@ using TaskManager.Service.Database.Sqlite;
 namespace TaskManager.Service.Database.Sqlite.Migrations
 {
     [DbContext(typeof(SqliteTaskManagerContext))]
-    [Migration("20240514212641_InitialCreate")]
+    [Migration("20240514230954_InitialCreate")]
     partial class InitialCreate
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
-            modelBuilder.HasAnnotation("ProductVersion", "7.0.18");
+            modelBuilder.HasAnnotation("ProductVersion", "7.0.19");
 
             modelBuilder.Entity("TaskManager.Service.Database.Models.DbLabel", b =>
                 {
@@ -97,11 +97,13 @@ namespace TaskManager.Service.Database.Sqlite.Migrations
                         .IsRequired()
                         .HasColumnType("TEXT");
 
-                    b.Property<int>("Status")
-                        .HasColumnType("INTEGER");
+                    b.Property<string>("Status")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
 
-                    b.Property<int>("Type")
-                        .HasColumnType("INTEGER");
+                    b.Property<string>("Type")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
 
                     b.HasKey("Id");
 

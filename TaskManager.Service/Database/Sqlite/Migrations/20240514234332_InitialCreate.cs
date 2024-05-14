@@ -73,23 +73,23 @@ namespace TaskManager.Service.Database.Sqlite.Migrations
                     ParentId = table.Column<string>(type: "TEXT", nullable: false),
                     ChildId = table.Column<string>(type: "TEXT", nullable: false),
                     CreatedAt = table.Column<DateTime>(type: "TEXT", nullable: false),
-                    ModifiedAt = table.Column<DateTime>(type: "TEXT", nullable: false),
-                    ParentTaskId = table.Column<string>(type: "TEXT", nullable: true),
-                    ChildTaskId = table.Column<string>(type: "TEXT", nullable: true)
+                    ModifiedAt = table.Column<DateTime>(type: "TEXT", nullable: false)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Task2Tasks", x => new { x.ParentId, x.ChildId });
                     table.ForeignKey(
-                        name: "FK_Task2Tasks_Tasks_ChildTaskId",
-                        column: x => x.ChildTaskId,
+                        name: "FK_Task2Tasks_Tasks_ChildId",
+                        column: x => x.ChildId,
                         principalTable: "Tasks",
-                        principalColumn: "Id");
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "FK_Task2Tasks_Tasks_ParentTaskId",
-                        column: x => x.ParentTaskId,
+                        name: "FK_Task2Tasks_Tasks_ParentId",
+                        column: x => x.ParentId,
                         principalTable: "Tasks",
-                        principalColumn: "Id");
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
@@ -152,14 +152,9 @@ namespace TaskManager.Service.Database.Sqlite.Migrations
                 column: "LabelId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Task2Tasks_ChildTaskId",
+                name: "IX_Task2Tasks_ChildId",
                 table: "Task2Tasks",
-                column: "ChildTaskId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_Task2Tasks_ParentTaskId",
-                table: "Task2Tasks",
-                column: "ParentTaskId");
+                column: "ChildId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_TimeEntries_TaskId",

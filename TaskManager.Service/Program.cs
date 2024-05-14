@@ -3,11 +3,12 @@ using TaskManager.Service.Database;
 using TaskManager.Service.Database.Sqlite;
 
 var builder = WebApplication.CreateBuilder(args);
-builder.Services
-    .AddAuthorization()
-    .AddEndpointsApiExplorer()
-    .AddSwaggerGen()
-    .AddDbContext<TaskManagerContext, SqliteTaskManagerContext>();
+var services = builder.Services;
+services.AddAuthorization();
+services.AddEndpointsApiExplorer();
+services.AddSwaggerGen();
+services.AddControllers();
+services.AddDbContext<TaskManagerContext, SqliteTaskManagerContext>();
 
 var app = builder.Build();
 DatabaseInitializer.Seed(app.Services);

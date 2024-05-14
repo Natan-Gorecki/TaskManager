@@ -1,5 +1,8 @@
-﻿namespace TaskManager.Service.Database.Models;
+﻿using Microsoft.EntityFrameworkCore;
 
+namespace TaskManager.Service.Database.Models;
+
+[PrimaryKey(nameof(ParentId), nameof(ChildId))]
 internal class DbTask2Task : IDbBase
 {
     public DateTime CreatedAt { get; set; }

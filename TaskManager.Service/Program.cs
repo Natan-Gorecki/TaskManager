@@ -1,17 +1,18 @@
 using TaskManager.Service;
 using TaskManager.Service.Database;
+using TaskManager.Service.Database.Sqlite;
 
 var builder = WebApplication.CreateBuilder(args);
 builder.Services
     .AddAuthorization()
     .AddEndpointsApiExplorer()
     .AddSwaggerGen()
-    .AddTaskManagerContext(builder.Configuration);
+    .AddDbContext<TaskManagerContext, SqliteTaskManagerContext>();
 
 var app = builder.Build();
+DatabaseInitializer.Seed(app.Services);
 
 //IF app.Environment.IsDevelopment()
-
 app.UseSwagger();
 app.UseSwaggerUI();
 

@@ -11,7 +11,7 @@ using TaskManager.Service.Database.Sqlite;
 namespace TaskManager.Service.Database.Sqlite.Migrations
 {
     [DbContext(typeof(SqliteTaskManagerContext))]
-    [Migration("20240514234332_InitialCreate")]
+    [Migration("20240515223551_InitialCreate")]
     partial class InitialCreate
     {
         /// <inheritdoc />
@@ -131,7 +131,7 @@ namespace TaskManager.Service.Database.Sqlite.Migrations
                     b.ToTable("Task2Labels");
                 });
 
-            modelBuilder.Entity("TaskManager.Service.Database.Models.DbTask2Task", b =>
+            modelBuilder.Entity("TaskManager.Service.Database.Models.DbTask2TaskJoin", b =>
                 {
                     b.Property<string>("ParentId")
                         .HasColumnType("TEXT");
@@ -149,7 +149,7 @@ namespace TaskManager.Service.Database.Sqlite.Migrations
 
                     b.HasIndex("ChildId");
 
-                    b.ToTable("Task2Tasks");
+                    b.ToTable("Task2TaskJoins");
                 });
 
             modelBuilder.Entity("TaskManager.Service.Database.Models.DbTimeEntry", b =>
@@ -213,23 +213,19 @@ namespace TaskManager.Service.Database.Sqlite.Migrations
                     b.Navigation("Task");
                 });
 
-            modelBuilder.Entity("TaskManager.Service.Database.Models.DbTask2Task", b =>
+            modelBuilder.Entity("TaskManager.Service.Database.Models.DbTask2TaskJoin", b =>
                 {
-                    b.HasOne("TaskManager.Service.Database.Models.DbTask", "ChildTask")
-                        .WithMany("ParentTaskRelations")
+                    b.HasOne("TaskManager.Service.Database.Models.DbTask", null)
+                        .WithMany()
                         .HasForeignKey("ChildId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("TaskManager.Service.Database.Models.DbTask", "ParentTask")
-                        .WithMany("ChildTaskRelations")
+                    b.HasOne("TaskManager.Service.Database.Models.DbTask", null)
+                        .WithMany()
                         .HasForeignKey("ParentId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
-
-                    b.Navigation("ChildTask");
-
-                    b.Navigation("ParentTask");
                 });
 
             modelBuilder.Entity("TaskManager.Service.Database.Models.DbTimeEntry", b =>
@@ -241,13 +237,6 @@ namespace TaskManager.Service.Database.Sqlite.Migrations
                         .IsRequired();
 
                     b.Navigation("Task");
-                });
-
-            modelBuilder.Entity("TaskManager.Service.Database.Models.DbTask", b =>
-                {
-                    b.Navigation("ChildTaskRelations");
-
-                    b.Navigation("ParentTaskRelations");
                 });
 #pragma warning restore 612, 618
         }

@@ -29,13 +29,11 @@ public class TaskController : ControllerBase
         var singleEpic = _context.Tasks.FirstOrDefault(x => x.Id == "IT-001");
 
         var epic = _context.Tasks.Where(x => x.Id == "IT-001")
-            .Include(x => x.ChildTaskRelations)
-                .ThenInclude(x => x.ChildTask)
+            .Include(x => x.ChildTasks)
             .FirstOrDefault();
 
         var firstTask = _context.Tasks.Where(x => x.Id == "IT-003")
-            .Include(x => x.ParentTaskRelations)
-                .ThenInclude(x => x.ParentTask)
+            .Include(x => x.ParentTasks)
             .FirstOrDefault();
 
         return Ok("DONE");

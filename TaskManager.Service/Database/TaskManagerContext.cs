@@ -9,13 +9,8 @@ public class TaskManagerContext : DbContext
     internal DbSet<DbSpace> Spaces { get; set; }
     internal DbSet<DbTask> Tasks { get; set; }
     internal DbSet<DbTask2Label> Task2Labels { get; set; }
-    internal DbSet<DbTask2Task> Task2Tasks { get; set; }
+    internal DbSet<DbTask2TaskJoin> Task2TaskJoins { get; set; }
     internal DbSet<DbTimeEntry> TimeEntries { get; set; }
-
-    protected override void ConfigureConventions(ModelConfigurationBuilder configurationBuilder)
-    {
-        configurationBuilder.Properties<Enum>().HaveConversion<string>();
-    }
 
     public override int SaveChanges()
     {
@@ -41,5 +36,21 @@ public class TaskManagerContext : DbContext
         }
 
         return base.SaveChanges();
+    }
+
+    protected override void ConfigureConventions(ModelConfigurationBuilder configurationBuilder)
+    {
+        configurationBuilder.Properties<Enum>().HaveConversion<string>();
+    }
+
+    protected override void OnModelCreating(ModelBuilder modelBuilder)
+    {
+        modelBuilder.Entity<DbTask>()
+            .HasMany(x => x.ChildTasks)
+            .WithMany(x => x.ParentTasks)
+            .UsingEntity<DbTask2TaskJoin>(
+                left => left.HasOne<DbTask>().WithMany().HasForeignKey(x => x.ChildId),
+                right => right.HasOne<DbTask>().WithMany().HasForeignKey(x => x.ParentId)
+            );
     }
 }

@@ -82,33 +82,33 @@ public static class DatabaseInitializer
 
         context.SaveChanges();
 
-        var epic2Story = new DbTask2Task
+        var epic2Story = new DbTask2TaskJoin
         {
             ParentId = epicTask.Id,
             ChildId = storyTask.Id,
         };
-        context.Task2Tasks.Add(epic2Story);
+        context.Task2TaskJoins.Add(epic2Story);
 
-        var  story2First= new DbTask2Task
+        var  story2First= new DbTask2TaskJoin
         {
             ParentId = storyTask.Id,
             ChildId = task3.Id,
         };
-        context.Task2Tasks.Add(story2First);
+        context.Task2TaskJoins.Add(story2First);
 
-        var story2Second = new DbTask2Task
+        var story2Second = new DbTask2TaskJoin
         {
             ParentId = storyTask.Id,
             ChildId = task4.Id,
         };
-        context.Task2Tasks.Add(story2Second);
+        context.Task2TaskJoins.Add(story2Second);
 
-        var story2Third= new DbTask2Task
+        var story2Third= new DbTask2TaskJoin
         {
             ParentId = storyTask.Id,
             ChildId = task5.Id,
         };
-        context.Task2Tasks.Add(story2Third);
+        context.Task2TaskJoins.Add(story2Third);
 
         context.SaveChanges();
     }

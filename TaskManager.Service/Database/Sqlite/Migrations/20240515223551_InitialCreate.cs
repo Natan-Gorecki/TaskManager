@@ -67,7 +67,7 @@ namespace TaskManager.Service.Database.Sqlite.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "Task2Tasks",
+                name: "Task2TaskJoins",
                 columns: table => new
                 {
                     ParentId = table.Column<string>(type: "TEXT", nullable: false),
@@ -77,15 +77,15 @@ namespace TaskManager.Service.Database.Sqlite.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Task2Tasks", x => new { x.ParentId, x.ChildId });
+                    table.PrimaryKey("PK_Task2TaskJoins", x => new { x.ParentId, x.ChildId });
                     table.ForeignKey(
-                        name: "FK_Task2Tasks_Tasks_ChildId",
+                        name: "FK_Task2TaskJoins_Tasks_ChildId",
                         column: x => x.ChildId,
                         principalTable: "Tasks",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "FK_Task2Tasks_Tasks_ParentId",
+                        name: "FK_Task2TaskJoins_Tasks_ParentId",
                         column: x => x.ParentId,
                         principalTable: "Tasks",
                         principalColumn: "Id",
@@ -152,8 +152,8 @@ namespace TaskManager.Service.Database.Sqlite.Migrations
                 column: "LabelId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Task2Tasks_ChildId",
-                table: "Task2Tasks",
+                name: "IX_Task2TaskJoins_ChildId",
+                table: "Task2TaskJoins",
                 column: "ChildId");
 
             migrationBuilder.CreateIndex(
@@ -169,7 +169,7 @@ namespace TaskManager.Service.Database.Sqlite.Migrations
                 name: "Task2Labels");
 
             migrationBuilder.DropTable(
-                name: "Task2Tasks");
+                name: "Task2TaskJoins");
 
             migrationBuilder.DropTable(
                 name: "TimeEntries");

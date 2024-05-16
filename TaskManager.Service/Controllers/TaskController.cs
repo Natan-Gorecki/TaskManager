@@ -33,7 +33,7 @@ public class TaskController : ControllerBase
             .FirstOrDefault();
 
         var firstTask = _context.Tasks.Where(x => x.Id == "IT-003")
-            .Include(x => x.ParentTasks)
+            .Include(x => x.ParentTask)
             .FirstOrDefault();
 
         return Ok("DONE");

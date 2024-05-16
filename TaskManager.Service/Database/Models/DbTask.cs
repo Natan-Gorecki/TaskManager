@@ -4,9 +4,12 @@ internal class DbTask : DbBase
 {
     public required string Name { get; set; }
     public required string Description { get; set; }
+    public string? ParentTaskId { get; set; }
+    public required string SpaceId { get; set; }
     public required TaskStatus Status { get; set; }
     public required TaskType Type { get; set; }
 
-    public List<DbTask>? ParentTasks { get; set; }
     public List<DbTask>? ChildTasks { get; set; }
+    public DbTask? ParentTask { get; set; }
+    public DbSpace? Space { get; set; }
 }

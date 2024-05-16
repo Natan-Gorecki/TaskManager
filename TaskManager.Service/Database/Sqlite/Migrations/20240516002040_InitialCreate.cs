@@ -80,26 +80,24 @@ namespace TaskManager.Service.Database.Sqlite.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "Task2Labels",
+                name: "Task2LabelJoins",
                 columns: table => new
                 {
-                    TaskId = table.Column<string>(type: "TEXT", nullable: false),
-                    LabelId = table.Column<string>(type: "TEXT", nullable: false),
-                    CreatedAt = table.Column<DateTime>(type: "TEXT", nullable: false),
-                    ModifiedAt = table.Column<DateTime>(type: "TEXT", nullable: false)
+                    LabelsId = table.Column<string>(type: "TEXT", nullable: false),
+                    TasksId = table.Column<string>(type: "TEXT", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Task2Labels", x => new { x.TaskId, x.LabelId });
+                    table.PrimaryKey("PK_Task2LabelJoins", x => new { x.LabelsId, x.TasksId });
                     table.ForeignKey(
-                        name: "FK_Task2Labels_Labels_LabelId",
-                        column: x => x.LabelId,
+                        name: "FK_Task2LabelJoins_Labels_LabelsId",
+                        column: x => x.LabelsId,
                         principalTable: "Labels",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "FK_Task2Labels_Tasks_TaskId",
-                        column: x => x.TaskId,
+                        name: "FK_Task2LabelJoins_Tasks_TasksId",
+                        column: x => x.TasksId,
                         principalTable: "Tasks",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
@@ -134,9 +132,9 @@ namespace TaskManager.Service.Database.Sqlite.Migrations
                 column: "SpaceId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Task2Labels_LabelId",
-                table: "Task2Labels",
-                column: "LabelId");
+                name: "IX_Task2LabelJoins_TasksId",
+                table: "Task2LabelJoins",
+                column: "TasksId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Tasks_ParentTaskId",
@@ -158,7 +156,7 @@ namespace TaskManager.Service.Database.Sqlite.Migrations
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropTable(
-                name: "Task2Labels");
+                name: "Task2LabelJoins");
 
             migrationBuilder.DropTable(
                 name: "TimeEntries");

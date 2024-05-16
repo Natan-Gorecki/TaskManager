@@ -2,7 +2,7 @@
 
 namespace TaskManager.Service.Database.Models;
 
-internal class DbBase : IDbBase
+internal class DbBase
 {
     [Key]
     public required string Id { get; set; }

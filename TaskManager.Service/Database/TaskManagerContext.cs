@@ -8,7 +8,6 @@ public class TaskManagerContext : DbContext
     internal DbSet<DbLabel> Labels { get; set; }
     internal DbSet<DbSpace> Spaces { get; set; }
     internal DbSet<DbTask> Tasks { get; set; }
-    internal DbSet<DbTask2Label> Task2Labels { get; set; }
     internal DbSet<DbTimeEntry> TimeEntries { get; set; }
 
     public override int SaveChanges()
@@ -17,7 +16,7 @@ public class TaskManagerContext : DbContext
 
         foreach (var changedEntity in ChangeTracker.Entries())
         {
-            if (changedEntity.Entity is IDbBase entity)
+            if (changedEntity.Entity is DbBase entity)
             {
                 switch (changedEntity.State)
                 {
@@ -40,5 +39,13 @@ public class TaskManagerContext : DbContext
     protected override void ConfigureConventions(ModelConfigurationBuilder configurationBuilder)
     {
         configurationBuilder.Properties<Enum>().HaveConversion<string>();
+    }
+
+    protected override void OnModelCreating(ModelBuilder modelBuilder)
+    {
+        modelBuilder.Entity<DbTask>()
+            .HasMany(x => x.Labels)
+            .WithMany(x => x.Tasks)
+            .UsingEntity("Task2LabelJoins");
     }
 }

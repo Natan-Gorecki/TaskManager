@@ -7,4 +7,5 @@ internal class DbLabel : DbBase
     public required string SpaceId { get; set; }
 
     public DbSpace? Space { get; set; }
+    public List<DbTask> Tasks { get; set; } = new();
 }

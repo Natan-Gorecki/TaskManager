@@ -11,7 +11,7 @@ using TaskManager.Service.Database.Sqlite;
 namespace TaskManager.Service.Database.Sqlite.Migrations
 {
     [DbContext(typeof(SqliteTaskManagerContext))]
-    [Migration("20240515235951_InitialCreate")]
+    [Migration("20240516002040_InitialCreate")]
     partial class InitialCreate
     {
         /// <inheritdoc />
@@ -19,6 +19,21 @@ namespace TaskManager.Service.Database.Sqlite.Migrations
         {
 #pragma warning disable 612, 618
             modelBuilder.HasAnnotation("ProductVersion", "7.0.19");
+
+            modelBuilder.Entity("Task2LabelJoins", b =>
+                {
+                    b.Property<string>("LabelsId")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("TasksId")
+                        .HasColumnType("TEXT");
+
+                    b.HasKey("LabelsId", "TasksId");
+
+                    b.HasIndex("TasksId");
+
+                    b.ToTable("Task2LabelJoins");
+                });
 
             modelBuilder.Entity("TaskManager.Service.Database.Models.DbLabel", b =>
                 {
@@ -121,27 +136,6 @@ namespace TaskManager.Service.Database.Sqlite.Migrations
                     b.ToTable("Tasks");
                 });
 
-            modelBuilder.Entity("TaskManager.Service.Database.Models.DbTask2Label", b =>
-                {
-                    b.Property<string>("TaskId")
-                        .HasColumnType("TEXT");
-
-                    b.Property<string>("LabelId")
-                        .HasColumnType("TEXT");
-
-                    b.Property<DateTime>("CreatedAt")
-                        .HasColumnType("TEXT");
-
-                    b.Property<DateTime>("ModifiedAt")
-                        .HasColumnType("TEXT");
-
-                    b.HasKey("TaskId", "LabelId");
-
-                    b.HasIndex("LabelId");
-
-                    b.ToTable("Task2Labels");
-                });
-
             modelBuilder.Entity("TaskManager.Service.Database.Models.DbTimeEntry", b =>
                 {
                     b.Property<string>("Id")
@@ -173,10 +167,25 @@ namespace TaskManager.Service.Database.Sqlite.Migrations
                     b.ToTable("TimeEntries");
                 });
 
+            modelBuilder.Entity("Task2LabelJoins", b =>
+                {
+                    b.HasOne("TaskManager.Service.Database.Models.DbLabel", null)
+                        .WithMany()
+                        .HasForeignKey("LabelsId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("TaskManager.Service.Database.Models.DbTask", null)
+                        .WithMany()
+                        .HasForeignKey("TasksId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
             modelBuilder.Entity("TaskManager.Service.Database.Models.DbLabel", b =>
                 {
                     b.HasOne("TaskManager.Service.Database.Models.DbSpace", "Space")
-                        .WithMany()
+                        .WithMany("Labels")
                         .HasForeignKey("SpaceId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -191,7 +200,7 @@ namespace TaskManager.Service.Database.Sqlite.Migrations
                         .HasForeignKey("ParentTaskId");
 
                     b.HasOne("TaskManager.Service.Database.Models.DbSpace", "Space")
-                        .WithMany()
+                        .WithMany("Tasks")
                         .HasForeignKey("SpaceId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -199,25 +208,6 @@ namespace TaskManager.Service.Database.Sqlite.Migrations
                     b.Navigation("ParentTask");
 
                     b.Navigation("Space");
-                });
-
-            modelBuilder.Entity("TaskManager.Service.Database.Models.DbTask2Label", b =>
-                {
-                    b.HasOne("TaskManager.Service.Database.Models.DbLabel", "Label")
-                        .WithMany()
-                        .HasForeignKey("LabelId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("TaskManager.Service.Database.Models.DbTask", "Task")
-                        .WithMany()
-                        .HasForeignKey("TaskId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Label");
-
-                    b.Navigation("Task");
                 });
 
             modelBuilder.Entity("TaskManager.Service.Database.Models.DbTimeEntry", b =>
@@ -229,6 +219,13 @@ namespace TaskManager.Service.Database.Sqlite.Migrations
                         .IsRequired();
 
                     b.Navigation("Task");
+                });
+
+            modelBuilder.Entity("TaskManager.Service.Database.Models.DbSpace", b =>
+                {
+                    b.Navigation("Labels");
+
+                    b.Navigation("Tasks");
                 });
 
             modelBuilder.Entity("TaskManager.Service.Database.Models.DbTask", b =>

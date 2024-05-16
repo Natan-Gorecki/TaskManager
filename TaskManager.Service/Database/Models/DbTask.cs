@@ -9,7 +9,8 @@ internal class DbTask : DbBase
     public required TaskStatus Status { get; set; }
     public required TaskType Type { get; set; }
 
-    public List<DbTask>? ChildTasks { get; set; }
+    public List<DbTask> ChildTasks { get; set; } = new();
+    public List<DbLabel> Labels { get; set; } = new();
     public DbTask? ParentTask { get; set; }
     public DbSpace? Space { get; set; }
 }

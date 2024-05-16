@@ -8,6 +8,7 @@ Table Spaces {
 Table Tasks {
   Id string [PK]
   SpaceId string [ref: > Spaces.Id]
+  ParentTaskId string [ref: > Tasks.Id]
   Name string
   Description string
   Status TaskStatus
@@ -29,12 +30,7 @@ Table TimeEntries {
   Description string
 }
 
-Table Task2Label {
+Table Task2LabelJoins {
   TaskId string [PK, ref: > Tasks.Id]
   LabelId string [PK, ref: > Labels.Id]
-}
-
-Table Task2Task {
-  ParentId string [PK, ref: > Tasks.Id]
-  ChildId string [PK, ref: > Tasks.Id]
 }

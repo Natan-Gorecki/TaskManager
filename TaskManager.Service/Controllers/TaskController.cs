@@ -24,18 +24,9 @@ public class TaskController : ControllerBase
     [HttpGet]
     public IActionResult GetTasks()
     {
-        var space = _context.Spaces.Where(x => x.Id == "1c0296c3-039f-4433-a891-402ec8c93917")
+        var space = _context.Spaces.Where(x => x.Id == "2f03707c-fbc1-4c98-9caf-d2a648f315b8")
             .Include(x => x.Tasks)
-                .ThenInclude(x => x.ChildTasks);
-
-        var singleEpic = _context.Tasks.FirstOrDefault(x => x.Id == "IT-001");
-
-        var epic = _context.Tasks.Where(x => x.Id == "IT-001")
-            .Include(x => x.ChildTasks)
-            .FirstOrDefault();
-
-        var firstTask = _context.Tasks.Where(x => x.Id == "IT-003")
-            .Include(x => x.ParentTask)
+                .ThenInclude(x => x.ChildTasks)
             .FirstOrDefault();
 
         return Ok("DONE");

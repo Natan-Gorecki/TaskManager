@@ -11,7 +11,7 @@ using TaskManager.Service.Database.Sqlite;
 namespace TaskManager.Service.Database.Sqlite.Migrations
 {
     [DbContext(typeof(SqliteTaskManagerContext))]
-    [Migration("20240516002040_InitialCreate")]
+    [Migration("20240516005002_InitialCreate")]
     partial class InitialCreate
     {
         /// <inheritdoc />
@@ -213,7 +213,7 @@ namespace TaskManager.Service.Database.Sqlite.Migrations
             modelBuilder.Entity("TaskManager.Service.Database.Models.DbTimeEntry", b =>
                 {
                     b.HasOne("TaskManager.Service.Database.Models.DbTask", "Task")
-                        .WithMany()
+                        .WithMany("TimeEntries")
                         .HasForeignKey("TaskId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -231,6 +231,8 @@ namespace TaskManager.Service.Database.Sqlite.Migrations
             modelBuilder.Entity("TaskManager.Service.Database.Models.DbTask", b =>
                 {
                     b.Navigation("ChildTasks");
+
+                    b.Navigation("TimeEntries");
                 });
 #pragma warning restore 612, 618
         }

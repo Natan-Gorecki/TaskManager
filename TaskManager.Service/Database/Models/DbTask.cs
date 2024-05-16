@@ -13,4 +13,5 @@ internal class DbTask : DbBase
     public List<DbLabel> Labels { get; set; } = new();
     public DbTask? ParentTask { get; set; }
     public DbSpace? Space { get; set; }
+    public List<DbTimeEntry> TimeEntries { get; set; } = new();
 }

@@ -12,6 +12,9 @@ jobs:
     - name: Checkout Repository
       uses: actions/checkout@v4
 
+    - name: Check GH version
+      run: gh --version
+
     - name: Authenticate GitHub CLI
       run: gh auth login --with-token < ${{ secrets.GITHUB_TOKEN }}
 

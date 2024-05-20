@@ -16,6 +16,8 @@ jobs:
       run: gh --version
 
     - name: Remove Existing Labels
+      env:
+        GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       run: |
         PR_NUMBER=${{ github.event.pull_request.number }}
         LABELS=$(gh pr view $PR_NUMBER --json labels --jq '.labels | .[].name')
@@ -25,6 +27,8 @@ jobs:
         done
 
     - name: Parse PR Title and Add Label
+      env:
+        GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       run: |
         PR_TITLE="${{ github.event.pull_request.title }}"
 

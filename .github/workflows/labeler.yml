@@ -15,9 +15,6 @@ jobs:
     - name: Check GH version
       run: gh --version
 
-    - name: Authenticate GitHub CLI
-      run: gh auth login --with-token < ${{ secrets.GITHUB_TOKEN }}
-
     - name: Remove Existing Labels
       run: |
         PR_NUMBER=${{ github.event.pull_request.number }}

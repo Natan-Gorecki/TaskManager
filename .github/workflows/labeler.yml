@@ -1,0 +1,59 @@
+name: "Pull Request Labeler"
+on:
+- pull_request_target
+
+jobs:
+  labeler:
+    permissions:
+      contents: read
+      pull-requests: write
+    runs-on: ubuntu-latest
+    steps:
+    - name: Checkout Repository
+      uses: actions/checkout@v4
+
+    - name: Authenticate GitHub CLI
+      run: gh auth login --with-token < ${{ secrets.GITHUB_TOKEN }}
+
+    - name: Remove Existing Labels
+      run: |
+        PR_NUMBER=${{ github.event.pull_request.number }}
+        LABELS=$(gh pr view $PR_NUMBER --json labels --jq '.labels | .[].name')
+
+        for LABEL in $LABELS; do
+          gh pr edit $PR_NUMBER --remove-label "$LABEL"
+        done
+
+    - name: Parse PR Title and Add Label
+      run: |
+        PR_TITLE="${{ github.event.pull_request.title }}"
+
+        if [[ "$PR_TITLE" == "build:"* ]]; then
+          LABEL="build"
+        elif [[ "$PR_TITLE" == "chore:"* ]]; then
+          LABEL="chore"
+        elif [[ "$PR_TITLE" == "ci:"* ]]; then
+          LABEL="ci"
+        elif [[ "$PR_TITLE" == "docs:"* ]]; then
+          LABEL="docs"
+        elif [[ "$PR_TITLE" == "feat:"* ]]; then
+          LABEL="feat"
+        elif [[ "$PR_TITLE" == "fix:"* ]]; then
+          LABEL="fix"
+        elif [[ "$PR_TITLE" == "perf:"* ]]; then
+          LABEL="perf"
+        elif [[ "$PR_TITLE" == "refactor:"* ]]; then
+          LABEL="refactor"
+        elif [[ "$PR_TITLE" == "revert:"* ]]; then
+          LABEL="revert"
+        elif [[ "$PR_TITLE" == "style:"* ]]; then
+          LABEL="style"
+        elif [[ "$PR_TITLE" == "test:"* ]]; then
+          LABEL="test"
+        else
+          LABEL="unlabeled"
+        fi
+
+        if [[ "$LABEL" != "unlabeled" ]]; then
+          gh pr edit ${{ github.event.pull_request.number }} --add-label "$LABEL"
+        fi

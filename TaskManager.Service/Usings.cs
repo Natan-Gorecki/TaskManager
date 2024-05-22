@@ -1,1 +1,2 @@
-﻿global using IMapper = AutoMapper.IMapper;
+﻿global using TaskManager.Service.Utils;
+global using IMapper = AutoMapper.IMapper;

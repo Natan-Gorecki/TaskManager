@@ -1,6 +1,5 @@
 ﻿using FastEndpoints;
 using TaskManager.Service.Database;
-using TaskManager.Service.Database.Models;
 
 namespace TaskManager.Service.Api.v1.Spaces;
 
@@ -13,6 +12,13 @@ public class Update(IMapper _mapper, TaskManagerContext _context) : Endpoint<Spa
         if (dbSpace is null)
         {
             await SendNotFoundAsync(cancellationToken);
+            return;
+        }
+
+        if (dbSpace.Key != request.Key && _context.Spaces.Any(x => x.Key == request.Key))
+        {
+            AddError($"Space with '{request.Key}' key exists.");
+            await SendErrorsAsync(StatusCode.Conflict, cancellationToken);
             return;
         }
 

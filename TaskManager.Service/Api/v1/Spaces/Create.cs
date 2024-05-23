@@ -9,9 +9,17 @@ public class Create(IMapper _mapper, TaskManagerContext _context) : Endpoint<Cre
 {
     public override async Task HandleAsync(CreateSpaceRequest request, CancellationToken cancellationToken)
     {
+        if (_context.Spaces.Any(x => x.Key == request.Key))
+        {
+            AddError($"Space with '{request.Key}' key exists.");
+            await SendErrorsAsync(StatusCode.Conflict, cancellationToken);
+            return;
+        }
+
         var dbSpace = _mapper.Map<DbSpace>(request);
         dbSpace.Id = Guid.NewGuid().ToString();
         await _context.AddAsync(dbSpace, cancellationToken);
+        await _context.SaveChangesAsync(cancellationToken);
 
         var response = _mapper.Map<SpaceDTO>(dbSpace);
         await SendAsync(response, StatusCode.Created, cancellationToken);

@@ -3,6 +3,7 @@ using TaskManager.Service.Database;
 
 namespace TaskManager.Service.Api.v1.Spaces;
 
+[HttpGet("/spaces/{Id}")]
 public class GetById(IMapper _mapper, TaskManagerContext _context) : Endpoint<GetSpaceByIdRequest, SpaceDTO>
 {
     public override async Task HandleAsync(GetSpaceByIdRequest request, CancellationToken cancellationToken)

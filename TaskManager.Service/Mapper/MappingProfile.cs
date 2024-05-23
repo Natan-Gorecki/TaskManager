@@ -9,5 +9,7 @@ public class MappingProfile : Profile
     public MappingProfile()
     {
         CreateMap<DbSpace, SpaceDTO>();
+        CreateMap<CreateSpaceRequest, DbSpace>();
+        CreateMap<SpaceDTO, DbSpace>();
     }
 }

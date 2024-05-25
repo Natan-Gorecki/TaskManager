@@ -3,7 +3,7 @@ using TaskManager.Service.Database;
 
 namespace TaskManager.Service.Api.v1.Spaces;
 
-[HttpDelete("/spaces/{Id}")]
+[HttpDelete("spaces/{Id}")]
 public class Delete(TaskManagerContext _context) : Endpoint<DeleteSpaceRequest, EmptyResponse>
 {
     public override async Task HandleAsync(DeleteSpaceRequest request, CancellationToken cancellationToken)

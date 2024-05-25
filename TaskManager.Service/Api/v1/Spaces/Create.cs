@@ -4,16 +4,14 @@ using TaskManager.Service.Database.Models;
 
 namespace TaskManager.Service.Api.v1.Spaces;
 
-[HttpPost("/spaces")]
+[HttpPost("spaces")]
 public class Create(IMapper _mapper, TaskManagerContext _context) : Endpoint<CreateSpaceRequest, SpaceDTO>
 {
     public override async Task HandleAsync(CreateSpaceRequest request, CancellationToken cancellationToken)
     {
         if (_context.Spaces.Any(x => x.Key == request.Key))
         {
-            AddError($"Space with '{request.Key}' key exists.");
-            await SendErrorsAsync(StatusCode.Conflict, cancellationToken);
-            return;
+            ThrowError($"Space with '{request.Key}' key exists.", StatusCode.Conflict);
         }
 
         var dbSpace = _mapper.Map<DbSpace>(request);

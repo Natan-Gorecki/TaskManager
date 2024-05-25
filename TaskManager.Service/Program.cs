@@ -34,7 +34,12 @@ IApplicationBuilder ConfigureWebApplication(WebApplication webApplication)
     //app.UseHttpsRedirection();
     app.UseFastEndpoints(x =>
     {
-        EndpointsConfigurator.ConfigureRouteVersioning(x.Endpoints);
+        x.Endpoints.Configurator = ep =>
+        {
+            ep.AllowAnonymous(); // TODO Enable HTTPS for endpoints
+            RouteVersioningConfigurator.Configure(ep);
+            ep.PreProcessor<RequestNullabilityValidator>(Order.Before);
+        };
         x.Endpoints.RoutePrefix = "api";
         x.Versioning.DefaultVersion = 1;
         x.Versioning.Prefix = "v";

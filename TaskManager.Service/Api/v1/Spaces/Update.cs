@@ -3,7 +3,7 @@ using TaskManager.Service.Database;
 
 namespace TaskManager.Service.Api.v1.Spaces;
 
-[HttpPut("/spaces/{Id}")]
+[HttpPut("spaces/{Id}")]
 public class Update(IMapper _mapper, TaskManagerContext _context) : Endpoint<SpaceDTO, SpaceDTO>
 {
     public override async Task HandleAsync(SpaceDTO request, CancellationToken cancellationToken)
@@ -17,9 +17,7 @@ public class Update(IMapper _mapper, TaskManagerContext _context) : Endpoint<Spa
 
         if (dbSpace.Key != request.Key && _context.Spaces.Any(x => x.Key == request.Key))
         {
-            AddError($"Space with '{request.Key}' key exists.");
-            await SendErrorsAsync(StatusCode.Conflict, cancellationToken);
-            return;
+            ThrowError($"Space with '{request.Key}' key exists.", StatusCode.Conflict);
         }
 
         dbSpace = _mapper.Map(request, dbSpace);

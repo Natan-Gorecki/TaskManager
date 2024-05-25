@@ -4,19 +4,13 @@ using System.Text.RegularExpressions;
 
 namespace TaskManager.Service.Utils;
 
-public static class EndpointsConfigurator
+public static class RouteVersioningConfigurator
 {
-    public static void ConfigureRouteVersioning(EndpointOptions options)
+    public static void Configure(EndpointDefinition endpointDefinition)
     {
-        options.Configurator = x =>
-        {
-            // TODO Enable HTTPS for endpoints
-            x.AllowAnonymous();
-
-            var version = GetVersion(x);
-            Guard.Against.Null(version);
-            x.EndpointVersion(version.Value);
-        };
+        var version = GetVersion(endpointDefinition);
+        Guard.Against.Null(version);
+        endpointDefinition.EndpointVersion(version.Value);
     }
 
     private static int? GetVersion(EndpointDefinition endpointDefinition)

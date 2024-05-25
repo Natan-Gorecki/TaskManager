@@ -7,7 +7,7 @@ namespace TaskManager.Service.Api.v1.Spaces;
 [HttpPost("spaces")]
 public class Create(IMapper _mapper, TaskManagerContext _context) : Endpoint<CreateSpaceRequest, SpaceDTO>
 {
-    public override async Task HandleAsync(CreateSpaceRequest request, CancellationToken cancellationToken)
+    public override async Task HandleAsync(CreateSpaceRequest request, CancellationToken ct)
     {
         if (_context.Spaces.Any(x => x.Key == request.Key))
         {
@@ -16,10 +16,10 @@ public class Create(IMapper _mapper, TaskManagerContext _context) : Endpoint<Cre
 
         var dbSpace = _mapper.Map<DbSpace>(request);
         dbSpace.Id = Guid.NewGuid().ToString();
-        await _context.AddAsync(dbSpace, cancellationToken);
-        await _context.SaveChangesAsync(cancellationToken);
+        await _context.AddAsync(dbSpace, ct);
+        await _context.SaveChangesAsync(ct);
 
         var response = _mapper.Map<SpaceDTO>(dbSpace);
-        await SendAsync(response, StatusCode.Created, cancellationToken);
+        await SendAsync(response, StatusCode.Created, ct);
     }
 }

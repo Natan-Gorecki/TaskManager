@@ -1,6 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using TaskManager.Service.Database.Models;
-using TaskStatus = TaskManager.Service.Database.Models.TaskStatus;
 
 namespace TaskManager.Service.Database;
 

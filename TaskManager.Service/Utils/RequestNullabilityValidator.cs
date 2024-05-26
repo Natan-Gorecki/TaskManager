@@ -7,6 +7,11 @@ public class RequestNullabilityValidator : IGlobalPreProcessor
 {
     public async Task PreProcessAsync(IPreProcessorContext context, CancellationToken ct)
     {
+        if (context.Request is null)
+        {
+            return;
+        }
+
         var validationResult = context.Request.ValidateNullability();
         if (!validationResult.Any())
         {

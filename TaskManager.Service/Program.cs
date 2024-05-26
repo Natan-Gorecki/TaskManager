@@ -1,5 +1,6 @@
 using FastEndpoints;
 using FastEndpoints.Swagger;
+using System.Text.Json.Serialization;
 using TaskManager.Service.Database;
 using TaskManager.Service.Database.Sqlite;
 using TaskManager.Service.Mapper;
@@ -40,6 +41,7 @@ IApplicationBuilder ConfigureWebApplication(WebApplication webApplication)
             RouteVersioningConfigurator.Configure(ep);
             ep.PreProcessor<RequestNullabilityValidator>(Order.Before);
         };
+        x.Serializer.Options.Converters.Add(new JsonStringEnumConverter());
         x.Endpoints.RoutePrefix = "api";
         x.Versioning.DefaultVersion = 1;
         x.Versioning.Prefix = "v";

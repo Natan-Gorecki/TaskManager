@@ -3,6 +3,7 @@ using AutoMapper.Extensions.EnumMapping;
 using TaskManager.Service.Api.v1.Labels;
 using TaskManager.Service.Api.v1.Spaces;
 using TaskManager.Service.Api.v1.Tasks;
+using TaskManager.Service.Api.v1.TimeEntries;
 using TaskManager.Service.Database.Models;
 
 namespace TaskManager.Service.Mapper;
@@ -23,6 +24,9 @@ public class MappingProfile : Profile
         CreateMap<TaskDTO, DbTask>().ReverseMap();
         CreateMapForEnums<TaskStatusDTO, TaskStatus>();
         CreateMapForEnums<TaskTypeDTO, TaskType>();
+
+        CreateMap<CreateTimeEntryRequest, DbTimeEntry>();
+        CreateMap<TimeEntryDTO, DbTimeEntry>().ReverseMap();
     }
 
     private void CreateMapForEnums<TSource, TDestination>()

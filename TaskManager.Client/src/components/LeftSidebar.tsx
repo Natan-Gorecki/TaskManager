@@ -1,32 +1,22 @@
-import React from 'react';
-import { Drawer, List, ListItem, ListItemText, Toolbar, Box } from '@mui/material';
+import { Drawer, List, ListItemButton, ListItemText, Toolbar, Box } from '@mui/material';
 
-const drawerWidth = 240;
+interface LeftSidebarProps {
+  open: boolean;
+}
 
-const LeftSidebar: React.FC = () => {
+export default function LeftSidebar({ open }: LeftSidebarProps): React.ReactElement {
   return (
-    <Drawer
-      variant="persistent"
-      anchor="left"
-      open
-      sx={{
-        width: drawerWidth,
-        flexShrink: 0,
-        [`& .MuiDrawer-paper`]: { width: drawerWidth, boxSizing: 'border-box' },
-      }}
-    >
+    <Drawer variant="persistent" open={open}>
       <Toolbar />
-      <Box sx={{ overflow: 'auto' }}>
+      <Box >
         <List>
-          {['Inbox', 'Starred', 'Send email', 'Drafts'].map((text) => (
-            <ListItem button key={text}>
-              <ListItemText primary={text} />
-            </ListItem>
+          {['Board', 'Tasks', 'Time reports'].map((text) => (
+            <ListItemButton key={text}>
+              <ListItemText primary={text}/>
+            </ListItemButton>
           ))}
         </List>
       </Box>
     </Drawer>
   );
-};
-
-export default LeftSidebar;
+}

@@ -6,13 +6,14 @@ import MenuIcon from '@mui/icons-material/Menu';
 import SettingsIcon from '@mui/icons-material/Settings';
 import AccountCircleIcon from '@mui/icons-material/AccountCircle';
 
-import Link from 'next/link';
+import { useRouter } from "next/router";
 
 interface TopBarProps {
   onMenuClick: () => void;
 }
 
 export default function TopBar({ onMenuClick }: TopBarProps): React.ReactElement<TopBarProps> {
+  const router = useRouter();
   const [comboBoxValue, setComboBoxValue] = React.useState('Space 1');
 
   const handleComboBoxChange = (event: SelectChangeEvent<string>) => {
@@ -26,14 +27,14 @@ export default function TopBar({ onMenuClick }: TopBarProps): React.ReactElement
           <IconButton color='inherit' sx={{ marginLeft: '5px'}} onClick={onMenuClick}>
             <MenuIcon/>
           </IconButton>
-          <Button color='inherit'>
+          <Button color='inherit' onClick={() => router.push('/')}>
             <Typography>
               Task Manager
             </Typography>
           </Button>
           <Select
             value={comboBoxValue}
-            sx={{ backgroundColor: 'white', height:'30px'}}
+            sx={{ backgroundColor: 'white', height:'30px' }}
             onChange={handleComboBoxChange}
           >
             {['Space 1', 'Space 2', 'Space 3'].map((spaceString) => (

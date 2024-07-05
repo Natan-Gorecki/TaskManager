@@ -3,14 +3,22 @@ import { useState } from "react";
 
 import TopBar from "@/components/TopBar";
 import LeftSidebar from "@/components/LeftSidebar"
+import { Typography } from "@mui/material";
 
-
-export default function Home(): React.ReactElement {
+export default function TasksPage(): React.ReactElement {
   const [isSidebarOpen, setIsSidebarOpen] = useState(true);
   return (
     <main>
       <LeftSidebar open={isSidebarOpen}/>
       <TopBar onMenuClick={() => setIsSidebarOpen(!isSidebarOpen)}/>
+      <Typography 
+        fontSize={'24px'}
+        position={'absolute'}
+        top={'100px'}
+        left={'100px'}
+      >
+        Tasks Page
+      </Typography>
     </main>
   );
 }

@@ -35,7 +35,13 @@ export default function LeftSidebar({ open, onClose }: LeftSidebarProps): React.
       <Box >
         <List>
           {menuRoutes.map((route: Route) => (
-            <ListItemButton key={route.name} onClick={() => router.push(route.path)}>
+            <ListItemButton
+              key={route.name}
+              onClick={() => {
+                router.push(route.path);
+                onClose();
+              }}
+            >
               <ListItemText primary={route.name}/>
             </ListItemButton>
           ))}

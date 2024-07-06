@@ -25,8 +25,13 @@ export default function LeftSidebar({ open, onClose }: LeftSidebarProps): React.
       variant='temporary'
       open={open}
       onClose={() => onClose()}
+      sx={{
+        '& .MuiDrawer-paper': {
+          borderTopRightRadius: '8px',
+          borderBottomRightRadius: '8px'
+        }
+      }}
     >
-      <Toolbar />
       <Box >
         <List>
           {menuRoutes.map((route: Route) => (

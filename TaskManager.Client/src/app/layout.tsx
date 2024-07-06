@@ -20,14 +20,10 @@ export default function RootLayout({ children }: { children: React.ReactNode; })
 
   return (
     <html lang="en">
-      <body className={inter.className} style={{ margin:0, height: '100vh', display: 'flex'}}>
+      <body className={inter.className} style={{ margin: '0px' }}>
+        <TopBar onMenuClick={() => setIsSidebarOpen(!isSidebarOpen)}/>
         <LeftSidebar open={isSidebarOpen}/>
-        <div style={{ display: 'flex', flexDirection: 'column', flexGrow: 1}}>
-          <TopBar onMenuClick={() => setIsSidebarOpen(!isSidebarOpen)}/>
-          <main style={{ backgroundColor: 'yellow', flexGrow: 1, justifyContent: 'center', alignItems: 'center' }}>
-            {children}
-          </main>
-        </div>
+        <main>{children}</main>
       </body>
     </html>
   );

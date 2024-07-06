@@ -21,7 +21,7 @@ export default function TopBar({ onMenuClick }: TopBarProps): React.ReactElement
   };
 
   return (
-    <AppBar position='fixed' sx={{ zIndex: (theme: Theme) => theme.zIndex.drawer + 1 }}>
+    <AppBar position='sticky' sx={{ zIndex: (theme: Theme) => theme.zIndex.drawer + 1 }}>
       <Toolbar disableGutters variant='dense' sx={{ justifyContent: 'space-between' }}>
         <Box>
           <IconButton color='inherit' sx={{ marginLeft: '5px'}} onClick={onMenuClick}>

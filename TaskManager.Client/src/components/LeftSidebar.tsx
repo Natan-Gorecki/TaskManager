@@ -1,5 +1,5 @@
 import { Drawer, List, ListItemButton, ListItemText, Toolbar, Box } from '@mui/material';
-import { useRouter } from 'next/router';
+import { useRouter } from 'next/navigation';
 
 interface LeftSidebarProps {
   open: boolean;

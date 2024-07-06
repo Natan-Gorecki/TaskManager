@@ -6,7 +6,7 @@ import MenuIcon from '@mui/icons-material/Menu';
 import SettingsIcon from '@mui/icons-material/Settings';
 import AccountCircleIcon from '@mui/icons-material/AccountCircle';
 
-import { useRouter } from "next/router";
+import { useRouter } from "next/navigation";
 
 interface TopBarProps {
   onMenuClick: () => void;
@@ -38,7 +38,7 @@ export default function TopBar({ onMenuClick }: TopBarProps): React.ReactElement
             onChange={handleComboBoxChange}
           >
             {['Space 1', 'Space 2', 'Space 3'].map((spaceString) => (
-              <MenuItem value={spaceString}>
+              <MenuItem key={spaceString} value={spaceString}>
                 {spaceString}
               </MenuItem>
             ))}

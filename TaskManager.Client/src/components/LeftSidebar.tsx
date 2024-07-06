@@ -3,6 +3,7 @@ import { useRouter } from 'next/navigation';
 
 interface LeftSidebarProps {
   open: boolean;
+  onClose: () => void;
 }
 
 interface Route {
@@ -16,11 +17,15 @@ const menuRoutes: Route[] = [
   { name: 'Tasks', path: '/tasks' }
 ];
 
-export default function LeftSidebar({ open }: LeftSidebarProps): React.ReactElement {
+export default function LeftSidebar({ open, onClose }: LeftSidebarProps): React.ReactElement {
   const router = useRouter();
 
   return (
-    <Drawer variant="persistent" open={open}>
+    <Drawer
+      variant='temporary'
+      open={open}
+      onClose={() => onClose()}
+    >
       <Toolbar />
       <Box >
         <List>

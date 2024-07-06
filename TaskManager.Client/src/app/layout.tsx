@@ -16,13 +16,18 @@ const inter = Inter({ subsets: ["latin"] });
 //};
 
 export default function RootLayout({ children }: { children: React.ReactNode; }) {
-  const [isSidebarOpen, setIsSidebarOpen] = useState(true);
+  const [menuOpen, setMenuOpen] = useState(false);
 
   return (
     <html lang="en">
       <body className={inter.className} style={{ margin: '0px' }}>
-        <TopBar onMenuClick={() => setIsSidebarOpen(!isSidebarOpen)}/>
-        <LeftSidebar open={isSidebarOpen}/>
+        <TopBar
+          onMenuClick={() => setMenuOpen(true)}
+        />
+        <LeftSidebar
+          open={menuOpen}
+          onClose={() => setMenuOpen(false)}
+        />
         <main>{children}</main>
       </body>
     </html>

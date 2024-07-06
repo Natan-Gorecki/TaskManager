@@ -1,5 +1,15 @@
-import { Drawer, List, ListItemButton, ListItemText, Toolbar, Box } from '@mui/material';
+import {
+  Box,
+  Drawer,
+  IconButton,
+  List,
+  ListItemButton,
+  ListItemText,
+  Toolbar
+} from '@mui/material';
 import { useRouter } from 'next/navigation';
+
+import CloseIcon from '@mui/icons-material/Close'
 
 interface LeftSidebarProps {
   open: boolean;
@@ -32,6 +42,11 @@ export default function LeftSidebar({ open, onClose }: LeftSidebarProps): React.
         }
       }}
     >
+      <Toolbar>
+        <IconButton onClick={() => onClose()}>
+          <CloseIcon/>
+        </IconButton>
+      </Toolbar>
       <Box >
         <List>
           {menuRoutes.map((route: Route) => (

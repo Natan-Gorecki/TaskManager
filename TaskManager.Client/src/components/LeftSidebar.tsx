@@ -74,9 +74,8 @@ export default function LeftSidebar({ open, onClose }: LeftSidebarProps): React.
       <Box >
         <List>
           {menuRoutes.map((menuItem: MenuItem) => (
-            <ListItem disablePadding>
+            <ListItem key={menuItem.name} disablePadding>
               <ListItemButton
-                key={menuItem.name}
                 disabled={!params.spaceKey}
                 onClick={() => {
                   router.push(menuItem.route.replace('[spaceKey]', params.spaceKey));

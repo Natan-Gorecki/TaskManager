@@ -8,17 +8,7 @@ interface TasksPageProps {
 
 export default function TasksPage({ params }: TasksPageProps): React.ReactElement {
   return (
-    <Typography sx={{
-      position: 'absolute',
-      top: 0,
-      height: '100vh',
-      width: '100vw',
-      display: 'flex',
-      flexDirection: 'column',
-      justifyContent: 'center',
-      alignItems: 'center',
-      fontSize: '24px'
-    }}>
+    <Typography className='fullscreen-center'>
         Tasks Page <br/>
         Selected Space: {decodeURIComponent(params.spaceKey)}
     </Typography>

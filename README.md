@@ -8,6 +8,8 @@ Deafult pattern is 35 + ServiceID (00-99) + HTTPS enabled (0-1).
 |---------------------|---------|-------|
 | TaskManager.Service | http    | 35010 |
 | TaskManager.Service | https   | 35011 |
+| TaskManager.Client  | http    | 35020 |
+| TaskManager.Client  | https   | 35021 |
 
 ### Migrations
 

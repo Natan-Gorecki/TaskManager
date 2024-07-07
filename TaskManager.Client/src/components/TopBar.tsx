@@ -79,7 +79,7 @@ export default function TopBar({ onMenuClick }: TopBarProps): React.ReactElement
           </Button>
           <Select
             value={currentSpace}
-            sx={{ backgroundColor: 'white', height:'30px' }}
+            sx={{ backgroundColor: 'white', height:'30px', minWidth: '7rem' }}
             onChange={handleSpaceChange}
           >
             {spaces.map((spaceString) => (

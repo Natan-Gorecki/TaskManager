@@ -1,12 +1,10 @@
-import React from "react";
+import { useRouter } from "next/navigation";
+import React, { useEffect } from "react";
 import { AppBar, Box, Button, IconButton, MenuItem, Select, SelectChangeEvent, Toolbar, Typography } from "@mui/material";
-import { Theme } from '@mui/material/styles';
 
 import MenuIcon from '@mui/icons-material/Menu';
 import SettingsIcon from '@mui/icons-material/Settings';
 import AccountCircleIcon from '@mui/icons-material/AccountCircle';
-
-import { useRouter } from "next/navigation";
 
 interface TopBarProps {
   onMenuClick: () => void;
@@ -14,11 +12,14 @@ interface TopBarProps {
 
 export default function TopBar({ onMenuClick }: TopBarProps): React.ReactElement<TopBarProps> {
   const router = useRouter();
-  const [comboBoxValue, setComboBoxValue] = React.useState('Space 1');
+  const [selectedSpace, setSelectedSpace] = React.useState('');
 
-  const handleComboBoxChange = (event: SelectChangeEvent<string>) => {
-    setComboBoxValue(event.target.value as string);
-  };
+  useEffect(() => {
+    const storageSpace = localStorage.getItem('selectedSpace');
+    if (storageSpace) {
+      setSelectedSpace(storageSpace);
+    }
+  }, []);
 
   return (
     <AppBar position='sticky'>
@@ -33,9 +34,12 @@ export default function TopBar({ onMenuClick }: TopBarProps): React.ReactElement
             </Typography>
           </Button>
           <Select
-            value={comboBoxValue}
+            value={selectedSpace}
             sx={{ backgroundColor: 'white', height:'30px' }}
-            onChange={handleComboBoxChange}
+            onChange={(event) => {
+              setSelectedSpace(event.target.value)
+              localStorage.setItem('selectedSpace', event.target.value);
+            }}
           >
             {['Space 1', 'Space 2', 'Space 3'].map((spaceString) => (
               <MenuItem key={spaceString} value={spaceString}>

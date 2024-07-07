@@ -1,3 +1,5 @@
+import { useParams, useRouter } from 'next/navigation';
+
 import {
   Box,
   Divider,
@@ -10,7 +12,7 @@ import {
   ListItemText,
   Toolbar
 } from '@mui/material';
-import { useRouter } from 'next/navigation';
+
 
 import BoardIcon from '@mui/icons-material/ViewKanbanOutlined'
 import CloseIcon from '@mui/icons-material/Close'
@@ -32,22 +34,23 @@ const menuRoutes: MenuItem[] = [
   {
     icon: <HomeIcon/>,
     name: 'Home',
-    route: '/'
+    route: '/spaces/[spaceKey]/dashboard'
   },
   {
     icon: <BoardIcon/>,
     name: 'Board',
-    route: '/board'
+    route: '/spaces/[spaceKey]/board'
   },
   {
     icon: <TasksIcon/>,
     name: 'Tasks',
-    route: '/tasks'
-  }
+    route: '/spaces/[spaceKey]/tasks'
+  },
 ];
 
 export default function LeftSidebar({ open, onClose }: LeftSidebarProps): React.ReactElement {
   const router = useRouter();
+  const params = useParams<{ spaceKey: string; }>();
 
   return (
     <Drawer
@@ -71,11 +74,11 @@ export default function LeftSidebar({ open, onClose }: LeftSidebarProps): React.
       <Box >
         <List>
           {menuRoutes.map((menuItem: MenuItem) => (
-            <ListItem disablePadding>
+            <ListItem key={menuItem.name} disablePadding>
               <ListItemButton
-                key={menuItem.name}
+                disabled={!params.spaceKey}
                 onClick={() => {
-                  router.push(menuItem.route);
+                  router.push(menuItem.route.replace('[spaceKey]', params.spaceKey));
                   onClose();
                 }}
               >

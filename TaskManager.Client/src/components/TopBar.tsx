@@ -1,6 +1,15 @@
-import { useRouter } from "next/navigation";
-import React, { useEffect } from "react";
-import { AppBar, Box, Button, IconButton, MenuItem, Select, SelectChangeEvent, Toolbar, Typography } from "@mui/material";
+import { useParams, useRouter } from "next/navigation";
+
+import {
+  AppBar,
+  Box,
+  Button,
+  IconButton,
+  MenuItem,
+  Select,
+  Toolbar,
+  Typography 
+} from "@mui/material";
 
 import MenuIcon from '@mui/icons-material/Menu';
 import SettingsIcon from '@mui/icons-material/Settings';
@@ -12,14 +21,7 @@ interface TopBarProps {
 
 export default function TopBar({ onMenuClick }: TopBarProps): React.ReactElement<TopBarProps> {
   const router = useRouter();
-  const [selectedSpace, setSelectedSpace] = React.useState('');
-
-  useEffect(() => {
-    const storageSpace = localStorage.getItem('selectedSpace');
-    if (storageSpace) {
-      setSelectedSpace(storageSpace);
-    }
-  }, []);
+  const params = useParams<{ spaceKey: string; }>();
 
   return (
     <AppBar position='sticky'>
@@ -34,11 +36,10 @@ export default function TopBar({ onMenuClick }: TopBarProps): React.ReactElement
             </Typography>
           </Button>
           <Select
-            value={selectedSpace}
+            value={decodeURIComponent(params.spaceKey)}
             sx={{ backgroundColor: 'white', height:'30px' }}
             onChange={(event) => {
-              setSelectedSpace(event.target.value)
-              localStorage.setItem('selectedSpace', event.target.value);
+              router.push(`/spaces/${event.target.value}/dashboard`);
             }}
           >
             {['Space 1', 'Space 2', 'Space 3'].map((spaceString) => (

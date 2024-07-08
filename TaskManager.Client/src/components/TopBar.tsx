@@ -17,17 +17,18 @@ import SettingsIcon from '@mui/icons-material/Settings';
 import AccountCircleIcon from '@mui/icons-material/AccountCircle';
 import { useEffect, useState } from "react";
 
+import taskManagerRepository from '@/services/TaskManagerRepository';
+
 interface TopBarProps {
   onMenuClick: () => void;
 }
-
-const spaces = ['Space 1', 'Space 2', 'Space 3'];
 
 export default function TopBar({ onMenuClick }: TopBarProps): React.ReactElement<TopBarProps> {
   const router = useRouter();
   const params = useParams<{ spaceKey: string; }>();
 
-  const [currentSpace, setCurrentSpace] = useState('');
+  const [spaces, setSpaces] = useState<string[]>([]);
+  const [currentSpace, setCurrentSpace] = useState<string>('');
 
   // #region Methods
   function handleTaskManagerButtonClick(): void {
@@ -55,6 +56,18 @@ export default function TopBar({ onMenuClick }: TopBarProps): React.ReactElement
   // #endregion
 
   // #region Effects
+  useEffect(() => {
+    const loadSpaces = async () => {
+      try {
+        const serviceSpaces = await taskManagerRepository.getSpaces();
+        setSpaces(serviceSpaces);
+      } catch (error) {
+        console.error('Failed to get spaced from service:', error);
+      }
+    }
+    loadSpaces();
+  }, [])
+
   useEffect(() => {
     const initialSpace = initializeSpace();
     setCurrentSpace(initialSpace);

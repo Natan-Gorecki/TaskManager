@@ -1,3 +1,5 @@
+import SpaceDTO from "@/models/SpaceDTO";
+
 class TaskManagerRepository {
   #constructUrl(pathname: string): URL {
     const serviceUrl = process.env.NEXT_PUBLIC_SERVICE_URL;
@@ -7,7 +9,7 @@ class TaskManagerRepository {
     return url;
   }
 
-  async getSpaces(): Promise<string[]> {
+  async getSpaces(): Promise<SpaceDTO[]> {
     const url = this.#constructUrl('/api/v1/spaces');
     const response = await fetch(url);
     if (!response.ok) throw new Error('Failed to fetch spaces.');

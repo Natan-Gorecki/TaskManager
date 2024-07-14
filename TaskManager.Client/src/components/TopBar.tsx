@@ -17,6 +17,7 @@ import SettingsIcon from '@mui/icons-material/Settings';
 import AccountCircleIcon from '@mui/icons-material/AccountCircle';
 import { useEffect, useState } from "react";
 
+import SpaceDTO from "@/models/SpaceDTO";
 import taskManagerRepository from '@/services/TaskManagerRepository';
 
 interface TopBarProps {
@@ -27,8 +28,8 @@ export default function TopBar({ onMenuClick }: TopBarProps): React.ReactElement
   const router = useRouter();
   const params = useParams<{ spaceKey: string; }>();
 
-  const [spaces, setSpaces] = useState<string[]>([]);
-  const [currentSpace, setCurrentSpace] = useState<string>('');
+  const [spaces, setSpaces] = useState<SpaceDTO[]>([]);
+  const [currentSpaceKey, setCurrentSpaceKey] = useState<string>('');
 
   // #region Methods
   function handleTaskManagerButtonClick(): void {
@@ -39,18 +40,18 @@ export default function TopBar({ onMenuClick }: TopBarProps): React.ReactElement
     router.push('/');
   }
 
-  function initializeSpace() {
+  function initializeSpace(): string {
     if (params.spaceKey) {
       return decodeURIComponent(params.spaceKey);
     }
     if (spaces.length > 0) {
-      return spaces[0];
+      return spaces[0].key;
     }
     return '';
   }
 
   function handleSpaceChange(event: SelectChangeEvent): void {
-    setCurrentSpace(event.target.value);
+    setCurrentSpaceKey(event.target.value);
     router.push(`/spaces/${event.target.value}/dashboard`);
   }
   // #endregion
@@ -69,8 +70,8 @@ export default function TopBar({ onMenuClick }: TopBarProps): React.ReactElement
   }, [])
 
   useEffect(() => {
-    const initialSpace = initializeSpace();
-    setCurrentSpace(initialSpace);
+    const initialSpace: string = initializeSpace();
+    setCurrentSpaceKey(initialSpace);
     if (!params.spaceKey && initialSpace) {
       router.push(`/spaces/${initialSpace}/dashboard`)
     }
@@ -91,13 +92,13 @@ export default function TopBar({ onMenuClick }: TopBarProps): React.ReactElement
             </Typography>
           </Button>
           <Select
-            value={currentSpace}
+            value={currentSpaceKey}
             sx={{ backgroundColor: 'white', height:'30px', minWidth: '7rem' }}
             onChange={handleSpaceChange}
           >
-            {spaces.map((spaceString) => (
-              <MenuItem key={spaceString} value={spaceString}>
-                {spaceString}
+            {spaces.map((space) => (
+              <MenuItem key={space.id} value={space.key}>
+                {space.name}
               </MenuItem>
             ))}
           </Select>

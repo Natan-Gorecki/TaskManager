@@ -1,19 +1,33 @@
+using Ardalis.GuardClauses;
 using FastEndpoints;
 using FastEndpoints.Swagger;
 using System.Text.Json.Serialization;
 using TaskManager.Service.Database;
 using TaskManager.Service.Database.Sqlite;
 using TaskManager.Service.Mapper;
-using TaskManager.Service.Utils;
 
 var builder = WebApplication.CreateBuilder(args);
-ConfigureServices(builder.Services);
+ConfigureServices(builder);
 var app = builder.Build();
 ConfigureWebApplication(app);
 app.Run();
 
-IServiceCollection ConfigureServices(IServiceCollection services)
+IServiceCollection ConfigureServices(WebApplicationBuilder webApplicationBuilder)
 {
+    var services = builder.Services;
+
+    services.AddCors(corsOptions =>
+    {
+        corsOptions.AddDefaultPolicy(corsPolicyBuilder =>
+        {
+            var allowedOrigins = builder.Configuration.GetSection("Cors:AllowedOrigins").Get<string[]>();
+            Guard.Against.Null(allowedOrigins);
+            corsPolicyBuilder.WithOrigins(allowedOrigins)
+                .AllowAnyMethod()
+                .AllowAnyHeader();
+        });
+    });
+    services.AddControllers();
     services.AddAutoMapper(typeof(MappingProfile));
     services.AddAuthorization();
     services.AddFastEndpoints();
@@ -33,6 +47,7 @@ IApplicationBuilder ConfigureWebApplication(WebApplication webApplication)
 
     //app.UseAuthorization();
     //app.UseHttpsRedirection();
+    app.UseCors();
     app.UseFastEndpoints(x =>
     {
         x.Endpoints.Configurator = ep =>

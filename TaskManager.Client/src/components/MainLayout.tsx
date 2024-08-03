@@ -69,19 +69,20 @@ export default function MainLayout({ children }: { children: React.ReactNode; })
   }, [])
 
   useEffect(() => {
-    if (!params.spaceKey) {
+    if (selectedSpace) {
+      if (params.spaceKey != selectedSpace.key) {
+        // route doesn't match selected space, fix it
+        router.push(`/spaces/${selectedSpace!.key}/dashboard`);
+      }
       return;
     }
 
-    if (!selectedSpace) {
+    if (params.spaceKey) {
+      // route points to space, but there is no selected, fix it
       const decodedSpaceKey = decodeURIComponent(params.spaceKey);
       var nextSpace = spaces.find(x => x.key == decodedSpaceKey);
       setSelectedSpace(nextSpace);
       return;
-    }
-
-    if (params.spaceKey != selectedSpace.key) {
-      router.push(`/spaces/${selectedSpace.key}/dashboard`);
     }
   }, [spaces, selectedSpace])
 

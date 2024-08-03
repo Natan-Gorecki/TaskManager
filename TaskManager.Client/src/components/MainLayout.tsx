@@ -1,5 +1,7 @@
 'use client'
 
+import { useParams, useRouter } from "next/navigation";
+
 import { createContext, useContext, useEffect, useState } from "react";
 
 import TopBar from "@/components/TopBar";
@@ -9,8 +11,10 @@ import taskManagerRepository from "@/services/TaskManagerRepository";
 
 // #region IDataContext
 interface IDataContext {
+  isInitialized: boolean;
+  selectedSpace: SpaceDTO | undefined;
+  setSelectedSpace: (space: SpaceDTO | undefined) => void;
   spaces: SpaceDTO[];
-  isLoading: boolean;
 }
 
 const DataContext = createContext<IDataContext | undefined>(undefined);
@@ -43,27 +47,54 @@ export const useErrorContext = () => {
 
 export default function MainLayout({ children }: { children: React.ReactNode; }) {
   const [errorMessage, setErrorMessage] = useState<string>('');
-  const [isLoading, setIsLoading] = useState<boolean>(true);
+  const [isInitialized, setIsInitialized] = useState<boolean>(false);
   const [menuOpen, setMenuOpen] = useState<boolean>(false);
+  const [selectedSpace, setSelectedSpace] = useState<SpaceDTO | undefined>(undefined);
   const [spaces, setSpaces] = useState<SpaceDTO[]>([]);
+
+  const router = useRouter();
+  const params = useParams<{ spaceKey: string; }>();
 
   useEffect(() => {
     const loadSpaces = async () => {
       try {
         const serviceSpaces = await taskManagerRepository.getSpaces();
         setSpaces(serviceSpaces);
+
+        if (params.spaceKey) {
+          const decodedSpaceKey = decodeURIComponent(params.spaceKey);
+          var foundSpace = serviceSpaces.find(x => x.key == decodedSpaceKey);
+          setSelectedSpace(foundSpace);
+        }
+
+        setIsInitialized(true);
       } catch (error) {
         console.error('Failed to get spaced from service:', error);
-      } finally {
-        setIsLoading(false);
       }
     }
     loadSpaces();
   }, [])
 
+  useEffect(() => {
+    if (!params.spaceKey) {
+      return;
+    }
+
+    if (!selectedSpace) {
+      const decodedSpaceKey = decodeURIComponent(params.spaceKey);
+      var nextSpace = spaces.find(x => x.key == decodedSpaceKey);
+      setSelectedSpace(nextSpace);
+      return;
+    }
+
+    if (params.spaceKey != selectedSpace.key) {
+      router.push(`/spaces/${selectedSpace.key}/dashboard`);
+    }
+  }, [spaces, selectedSpace])
+
   return (
     <>
-      <DataContext.Provider value={{ spaces, isLoading }}>
+      <DataContext.Provider value={{ isInitialized, selectedSpace, setSelectedSpace, spaces }}>
         <ErrorContext.Provider value={{ errorMessage, setErrorMessage }}>
           <TopBar
             onMenuClick={() => setMenuOpen(true)}

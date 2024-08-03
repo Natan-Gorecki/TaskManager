@@ -13,9 +13,9 @@ interface SpaceLayoutProps {
 }
 
 export default function SpaceLayout({ children, params }: SpaceLayoutProps) {
-  const { spaces, isLoading } = useDataContext();
+  const { isInitialized, selectedSpace } = useDataContext();
 
-  if (isLoading) {
+  if (!isInitialized) {
     return (
       <div className='fullscreen-center'>
         <CircularProgress/>
@@ -23,7 +23,7 @@ export default function SpaceLayout({ children, params }: SpaceLayoutProps) {
     );
   }
 
-  if (!params.spaceKey || !spaces.some(x => x.key == params.spaceKey)) {
+  if (!selectedSpace) {
     return <NotFound errorMessage={`Space with '${params.spaceKey}' key doesn't exist.`}/>
   }
 

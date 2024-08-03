@@ -60,13 +60,6 @@ export default function MainLayout({ children }: { children: React.ReactNode; })
       try {
         const serviceSpaces = await taskManagerRepository.getSpaces();
         setSpaces(serviceSpaces);
-
-        if (params.spaceKey) {
-          const decodedSpaceKey = decodeURIComponent(params.spaceKey);
-          var foundSpace = serviceSpaces.find(x => x.key == decodedSpaceKey);
-          setSelectedSpace(foundSpace);
-        }
-
         setIsInitialized(true);
       } catch (error) {
         console.error('Failed to get spaced from service:', error);

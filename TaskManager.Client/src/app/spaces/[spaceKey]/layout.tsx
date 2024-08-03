@@ -1,9 +1,9 @@
 'use client'
 
+import { CircularProgress, Typography } from "@mui/material";
+
 import { useDataContext } from "@/components/MainLayout";
 import NotFound from "@/components/NotFound";
-import { CircularProgress, Typography } from "@mui/material";
-import { notFound } from "next/navigation";
 
 interface SpaceLayoutProps {
   children: React.ReactNode;

@@ -20,18 +20,18 @@ import TasksIcon from '@mui/icons-material/ListAltOutlined'
 
 import { useDataContext } from '@/components/MainLayout';
 
-interface LeftSidebarProps {
+interface ILeftSidebarProps {
   open: boolean;
   onClose: () => void;
 }
 
-interface MenuItem {
+interface IMenuItem {
   icon: React.ReactElement;
   name: string;
   route: string;
 }
 
-const menuRoutes: MenuItem[] = [
+const menuRoutes: IMenuItem[] = [
   {
     icon: <HomeIcon/>,
     name: 'Home',
@@ -49,7 +49,7 @@ const menuRoutes: MenuItem[] = [
   },
 ];
 
-export default function LeftSidebar({ open, onClose }: LeftSidebarProps): React.ReactElement {
+export default function LeftSidebar({ open, onClose }: ILeftSidebarProps) {
   const router = useRouter();
   const { selectedSpace } = useDataContext();
 
@@ -74,7 +74,7 @@ export default function LeftSidebar({ open, onClose }: LeftSidebarProps): React.
       </Toolbar>
       <Box >
         <List>
-          {menuRoutes.map((menuItem: MenuItem) => (
+          {menuRoutes.map((menuItem: IMenuItem) => (
             <ListItem key={menuItem.name} disablePadding>
               <ListItemButton
                 disabled={!selectedSpace}

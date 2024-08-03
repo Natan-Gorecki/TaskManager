@@ -1,6 +1,6 @@
 import { Typography } from "@mui/material";
 
-export default function Home(): React.ReactElement {
+export default function Home() {
   return (
     <Typography className='fullscreen-center'>
       Welcome in Task Manager family! <br/>

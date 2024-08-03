@@ -1,12 +1,12 @@
 import { Typography } from "@mui/material";
 
-interface DashboardPageProps {
+interface IDashboardPageProps {
   params: {
     spaceKey: string;
   }
 }
 
-export default function DashboardPage({ params }: DashboardPageProps): React.ReactElement {
+export default function DashboardPage({ params }: IDashboardPageProps) {
   return (
     <Typography className='fullscreen-center'>
         Dashboard Page <br/>

@@ -1,12 +1,12 @@
 import { Typography } from "@mui/material";
 
-interface BoardPageProps {
+interface IBoardPageProps {
   params: {
     spaceKey: string;
   }
 }
 
-export default function BoardPage({ params }: BoardPageProps): React.ReactElement {
+export default function BoardPage({ params }: IBoardPageProps) {
   return (
     <Typography className='fullscreen-center'>
         Board Page <br/>

@@ -18,11 +18,11 @@ import AccountCircleIcon from '@mui/icons-material/AccountCircle';
 
 import { useDataContext } from "@/components/MainLayout";
 
-interface TopBarProps {
+interface ITopBarProps {
   onMenuClick: () => void;
 }
 
-export default function TopBar({ onMenuClick }: TopBarProps): React.ReactElement<TopBarProps> {
+export default function TopBar({ onMenuClick }: ITopBarProps) {
   // #region Fields
   const router = useRouter();
 

@@ -15,8 +15,7 @@ export default function RootLayout({ children }: { children: React.ReactNode; })
   return (
     <html lang="en">
       <body className={inter.className} style={{ margin: '0px' }}>
-        <MainLayout/>
-        <main>{children}</main>
+        <MainLayout children={children}/>
       </body>
     </html>
   );

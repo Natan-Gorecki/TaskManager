@@ -1,4 +1,4 @@
-import { useParams, useRouter } from 'next/navigation';
+import { useRouter } from 'next/navigation';
 
 import {
   Box,
@@ -13,11 +13,12 @@ import {
   Toolbar
 } from '@mui/material';
 
-
 import BoardIcon from '@mui/icons-material/ViewKanbanOutlined'
 import CloseIcon from '@mui/icons-material/Close'
 import HomeIcon from '@mui/icons-material/HomeOutlined'
 import TasksIcon from '@mui/icons-material/ListAltOutlined'
+
+import { useDataContext } from '@/components/MainLayout';
 
 interface LeftSidebarProps {
   open: boolean;
@@ -50,7 +51,7 @@ const menuRoutes: MenuItem[] = [
 
 export default function LeftSidebar({ open, onClose }: LeftSidebarProps): React.ReactElement {
   const router = useRouter();
-  const params = useParams<{ spaceKey: string; }>();
+  const { selectedSpace } = useDataContext();
 
   return (
     <Drawer
@@ -76,9 +77,9 @@ export default function LeftSidebar({ open, onClose }: LeftSidebarProps): React.
           {menuRoutes.map((menuItem: MenuItem) => (
             <ListItem key={menuItem.name} disablePadding>
               <ListItemButton
-                disabled={!params.spaceKey}
+                disabled={!selectedSpace}
                 onClick={() => {
-                  router.push(menuItem.route.replace('[spaceKey]', params.spaceKey));
+                  router.push(menuItem.route.replace('[spaceKey]', selectedSpace!.key));
                   onClose();
                 }}
               >

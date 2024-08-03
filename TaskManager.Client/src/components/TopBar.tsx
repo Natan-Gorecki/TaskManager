@@ -1,4 +1,4 @@
-import { useParams, useRouter } from "next/navigation";
+import { useRouter } from "next/navigation";
 
 import {
   AppBar,
@@ -15,67 +15,35 @@ import {
 import MenuIcon from '@mui/icons-material/Menu';
 import SettingsIcon from '@mui/icons-material/Settings';
 import AccountCircleIcon from '@mui/icons-material/AccountCircle';
-import { useEffect, useState } from "react";
 
-import SpaceDTO from "@/models/SpaceDTO";
-import taskManagerRepository from '@/services/TaskManagerRepository';
+import { useDataContext } from "@/components/MainLayout";
 
 interface TopBarProps {
   onMenuClick: () => void;
 }
 
 export default function TopBar({ onMenuClick }: TopBarProps): React.ReactElement<TopBarProps> {
+  // #region Fields
   const router = useRouter();
-  const params = useParams<{ spaceKey: string; }>();
 
-  const [spaces, setSpaces] = useState<SpaceDTO[]>([]);
-  const [currentSpaceKey, setCurrentSpaceKey] = useState<string>('');
+  const { selectedSpace, setSelectedSpace, spaces } = useDataContext();
+  // #endregion
 
   // #region Methods
   function handleTaskManagerButtonClick(): void {
-    if (params.spaceKey) { // more fluent UI, but works also without
-      router.push(`/spaces/${params.spaceKey}/dashboard`);
+    if (selectedSpace) {
+      router.push(`/spaces/${selectedSpace.key}/dashboard`);
       return;
     }
     router.push('/');
   }
 
-  function initializeSpace(): string {
-    if (params.spaceKey) {
-      return decodeURIComponent(params.spaceKey);
-    }
-    if (spaces.length > 0) {
-      return spaces[0].key;
-    }
-    return '';
-  }
-
   function handleSpaceChange(event: SelectChangeEvent): void {
-    setCurrentSpaceKey(event.target.value);
-    router.push(`/spaces/${event.target.value}/dashboard`);
+    // do not push directly to router, but allow main layout to update own properties
+    // we could also reload window using window.location.href, but this method should be more optimal
+    const nextSpace = spaces.find(x => x.key == event.target.value);
+    setSelectedSpace(nextSpace);
   }
-  // #endregion
-
-  // #region Effects
-  useEffect(() => {
-    const loadSpaces = async () => {
-      try {
-        const serviceSpaces = await taskManagerRepository.getSpaces();
-        setSpaces(serviceSpaces);
-      } catch (error) {
-        console.error('Failed to get spaced from service:', error);
-      }
-    }
-    loadSpaces();
-  }, [])
-
-  useEffect(() => {
-    const initialSpace: string = initializeSpace();
-    setCurrentSpaceKey(initialSpace);
-    if (!params.spaceKey && initialSpace) {
-      router.push(`/spaces/${initialSpace}/dashboard`)
-    }
-  }, [params.spaceKey, spaces]);
   // #endregion
 
   // #region UI
@@ -92,7 +60,7 @@ export default function TopBar({ onMenuClick }: TopBarProps): React.ReactElement
             </Typography>
           </Button>
           <Select
-            value={currentSpaceKey}
+            value={selectedSpace?.key ?? ''}
             sx={{ backgroundColor: 'white', height:'30px', minWidth: '7rem' }}
             onChange={handleSpaceChange}
           >

@@ -6,7 +6,7 @@ interface IBoardPageProps {
   }
 }
 
-export default function BoardPage({ params }: IBoardPageProps): React.ReactElement {
+export default function BoardPage({ params }: IBoardPageProps) {
   return (
     <Typography className='fullscreen-center'>
         Board Page <br/>

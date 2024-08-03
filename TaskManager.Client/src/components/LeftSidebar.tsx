@@ -49,7 +49,7 @@ const menuRoutes: IMenuItem[] = [
   },
 ];
 
-export default function LeftSidebar({ open, onClose }: ILeftSidebarProps): React.ReactElement {
+export default function LeftSidebar({ open, onClose }: ILeftSidebarProps) {
   const router = useRouter();
   const { selectedSpace } = useDataContext();
 

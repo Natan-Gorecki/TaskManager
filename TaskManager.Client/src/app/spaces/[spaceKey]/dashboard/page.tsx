@@ -6,7 +6,7 @@ interface IDashboardPageProps {
   }
 }
 
-export default function DashboardPage({ params }: IDashboardPageProps): React.ReactElement {
+export default function DashboardPage({ params }: IDashboardPageProps) {
   return (
     <Typography className='fullscreen-center'>
         Dashboard Page <br/>

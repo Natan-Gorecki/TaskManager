@@ -6,7 +6,7 @@ interface ITasksPageProps {
   }
 }
 
-export default function TasksPage({ params }: ITasksPageProps): React.ReactElement {
+export default function TasksPage({ params }: ITasksPageProps) {
   return (
     <Typography className='fullscreen-center'>
         Tasks Page <br/>

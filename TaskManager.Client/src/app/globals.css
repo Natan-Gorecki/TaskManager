@@ -8,6 +8,17 @@
   align-items: center;
 }
 
+.topbar-select {
+  background-color: white;
+  height: 30px;
+  min-width: 7rem;
+}
+@media only screen and (max-width: 400px) {
+  .topbar-select {
+    max-width: 8rem;
+  }
+}
+
 .notfound-404 {
   display: inline-block;
   margin-right: 20px;

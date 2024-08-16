@@ -59,9 +59,9 @@ export default function TopBar({ onMenuClick }: ITopBarProps) {
               Task Manager
             </Typography>
           </Button>
-          <Select
+          <Select 
+            className='topbar-select'
             value={selectedSpace?.key ?? ''}
-            sx={{ backgroundColor: 'white', height:'30px', minWidth: '7rem' }}
             onChange={handleSpaceChange}
           >
             {spaces.map((space) => (
@@ -72,9 +72,6 @@ export default function TopBar({ onMenuClick }: ITopBarProps) {
           </Select>
         </Box>
         <Box>
-          <IconButton color='inherit'>
-            <SettingsIcon/>
-          </IconButton>
           <IconButton color='inherit'>
             <AccountCircleIcon/>
           </IconButton>

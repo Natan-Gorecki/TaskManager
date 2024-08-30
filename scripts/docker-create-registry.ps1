@@ -53,7 +53,11 @@ if ($OverrideExisting -and $RegistryExists) {
 
 if (-not $RegistryExists) {
   Log "Creating '$RegistryName' container..."
-  docker run -d -p ${RegistryPort}:5000 --name $RegistryName registry:2.7
+  docker run -d `
+    --restart unless-stopped `
+    --name $RegistryName `
+    -p ${RegistryPort}:5000 `
+    registry:2.7
   return
 }
 

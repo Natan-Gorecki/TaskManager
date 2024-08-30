@@ -129,6 +129,7 @@ function ProcessService {
     }
 
     docker run -d `
+      --restart unless-stopped `
       --name ${DockerName} `
       -p ${HttpPort}:80 `
       -p ${SslPort}:443 `

@@ -8,17 +8,20 @@ param(
   [switch]$Help               = $false
 )
 
+# imports
+. .\scripts\logger.ps1
+
 $InformationPreference = "Continue"
 
 function Show-Help {
-  Write-Information "Usage: .\docker-create-registry.ps1 [-Flags]"
-  Write-Information ""
-  Write-Information "Parameters:"
-  Write-Information "[-RegistryHost]        Hose which should point to registry. Unused with local dockers. Default value is 'localhost'."
-  Write-Information "[-RegistryName]        Name used by docker registry. Default value is 'docker-registry'."
-  Write-Information "[-RegistryPort]        Port used by docker registry. Default value is 5000."
-  Write-Information "[-OverrideExisting]    Specify if existing registry should be overriden. Default value is FALSE."
-  Write-Information "[-Help]                Displays this help message."
+  Log "Usage: .\docker-create-registry.ps1 [-Flags]"
+  Log ""
+  Log "Parameters:"
+  Log "[-RegistryHost]        Hose which should point to registry. Unused with local dockers. Default value is 'localhost'."
+  Log "[-RegistryName]        Name used by docker registry. Default value is 'docker-registry'."
+  Log "[-RegistryPort]        Port used by docker registry. Default value is 5000."
+  Log "[-OverrideExisting]    Specify if existing registry should be overriden. Default value is FALSE."
+  Log "[-Help]                Displays this help message."
   return
 }
 
@@ -27,34 +30,34 @@ if ($Help) {
   return
 }
 
-Write-Information "'docker-create-registry' configuration:"
-Write-Information "Host: $RegistryHost"
-Write-Information "Name: $RegistryName"
-Write-Information "Port: $RegistryPort"
-Write-Information "Should override existing: $OverrideExisting"
+Log "'docker-create-registry' configuration:"
+Log "Host: $RegistryHost"
+Log "Name: $RegistryName"
+Log "Port: $RegistryPort"
+Log "Should override existing: $OverrideExisting"
 
 $RegistryIsRunning = docker container ls --filter "name=$RegistryName" --format "{{.Names}}" | Where-Object { $_ -eq $RegistryName }
 $RegistryExists = docker container ls --all --filter "name=$RegistryName" --format "{{.Names}}" | Where-Object { $_ -eq $RegistryName }
 
 if ($RegistryExists) {
   $RegistryStatusString = if ($RegistryIsRunning) { "Running" } else { "Exited" }
-  Write-Information "Found '$RegistryName' container with '$RegistryStatusString' status."
+  Log "Found '$RegistryName' container with '$RegistryStatusString' status."
 }
 
 if ($OverrideExisting -and $RegistryExists) {
-  Write-Information "Removing existing container..."
+  Log "Removing existing container..."
   docker container rm --force $RegistryName
   $RegistryIsRunning = $false
   $RegistryExists = $false
 }
 
 if (-not $RegistryExists) {
-  Write-Information "Creating '$RegistryName' container..."
+  Log "Creating '$RegistryName' container..."
   docker run -d -p ${RegistryPort}:5000 --name $RegistryName registry:2.7
   return
 }
 
 if (-not $RegistryIsRunning) {
-  Write-Information "Starting '$RegistryName' container..."
+  Log "Starting '$RegistryName' container..."
   docker container start $RegistryName
 }

@@ -1,13 +1,13 @@
 # docker-interactive.ps1
 
 param(
-  [switch]$RunAll = $true,
+  [switch]$RunAll,
   [switch]$CreateRegistry,
   [switch]$BuildImages,
   [switch]$PushImages,
   [switch]$DeployContainers,
   [switch]$TaskManagerClient,
-  [switch]$TaskManagerService = $true,
+  [switch]$TaskManagerService,
   [switch]$Help,
   [string]$Tag,
   [string]$RegistryHost = "localhost",

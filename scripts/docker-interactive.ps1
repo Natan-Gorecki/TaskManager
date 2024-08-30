@@ -1,11 +1,12 @@
 # docker-interactive.ps1
 
 param(
-  [switch]$RunAll,
+  [switch]$AllSteps,
   [switch]$CreateRegistry,
   [switch]$BuildImages,
   [switch]$PushImages,
   [switch]$DeployContainers,
+  [switch]$AllServices,
   [switch]$TaskManagerClient,
   [switch]$TaskManagerService,
   [switch]$Help,
@@ -18,12 +19,18 @@ param(
 . .\scripts\logger.ps1
 
 $InformationPreference = "Continue"
-$WorkflowStepsDefined = $CreateRegistry -or $BuildImages -or $PushImages -or $DeployContainers -or $RunAll
-$WorkflowServicesDefined = $TaskManagerClient -or $TaskManagerService
+$WorkflowStepsDefined = $AllSteps `
+  -or $CreateRegistry `
+  -or $BuildImages `
+  -or $PushImages `
+  -or $DeployContainers
+$WorkflowServicesDefined = $AllServices `
+  -or $TaskManagerClient `
+  -or $TaskManagerService
 
 function ShowWorkflowSteps {
   Log "Workflow steps:"
-  Log "[-RunAll]                If you don't want to specify all steps separately, you can use default process."
+  Log "[-AllSteps]              If you don't want to specify all steps separately, you can use default process."
   Log "[-CreateRegistry]        Create docker registry, if it doesn't exist."
   Log "[-BuildImages]           Build docker images."
   Log "[-PushImages]            Push docker images to registry."
@@ -37,6 +44,7 @@ function ShowWorkflowParameters {
 
 function ShowWorkflowServices {
   Log "Workflow services:"
+  Log "[-AllServices]           If you don't want to specify all services separately, you can select them all."
   Log "[-TaskManagerClient]     Include TaskManager.Client."
   Log "[-TaskManagerService]    Include TaskManager.Service."
 }
@@ -94,7 +102,7 @@ function ProcessService {
   Log ""
   Log -Level Warn "Processing $ServiceName..."
 
-  if ($RunAll -or $BuildImages) {
+  if ($AllSteps -or $BuildImages) {
     Log -Level Warn "Building docker image..."
     docker build . `
       --file .\$ServiceName\Dockerfile `
@@ -102,7 +110,7 @@ function ProcessService {
     # TODO --build-arg "BUILD_CONFIGURATION=Debug"
   }
 
-  if ($RunAll -or $PushImages) {
+  if ($AllSteps -or $PushImages) {
     Log -Level Warn "Pushing image to registry..."
 
     $response = Invoke-RestMethod -Uri "http://${RegistryHost}:${RegistryPort}/v2/${DockerName}/tags/list"
@@ -113,7 +121,7 @@ function ProcessService {
     docker push ${RegistryHost}:$RegistryPort/${DockerName}:$Tag
   }
 
-  if ($RunAll -or $DeployContainers) {
+  if ($AllSteps -or $DeployContainers) {
     Log -Level Warn "Starting container..."
 
     $ContainerIsRunning = docker container ls --filter "name=$DockerName" --format "{{.Names}}" | Where-Object { $_ -eq $DockerName }
@@ -137,7 +145,7 @@ function ProcessService {
   }
 }
 
-if ($TaskManagerClient) {
+if ($AllServices -or $TaskManagerClient) {
   ProcessService `
     -ServiceName "TaskManager.Client" `
     -DockerName "task-manager-client" `
@@ -145,7 +153,7 @@ if ($TaskManagerClient) {
     -SslPort 35021
 }
 
-if ($TaskManagerService) {
+if ($AllServices -or $TaskManagerService) {
   ProcessService `
     -ServiceName "TaskManager.Service" `
     -DockerName "task-manager-service" `

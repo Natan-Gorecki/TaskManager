@@ -13,7 +13,7 @@ param(
 
 $InformationPreference = "Continue"
 
-function Show-Help {
+function ShowHelp {
   Log "Usage: .\docker-create-registry.ps1 [-Flags]"
   Log ""
   Log "Parameters:"
@@ -26,7 +26,7 @@ function Show-Help {
 }
 
 if ($Help) {
-  Show-Help
+  ShowHelp
   return
 }
 

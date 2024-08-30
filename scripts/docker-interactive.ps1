@@ -21,7 +21,7 @@ $InformationPreference = "Continue"
 $WorkflowStepsDefined = $CreateRegistry -or $BuildImages -or $PushImages -or $DeployContainers -or $RunAll
 $WorkflowServicesDefined = $TaskManagerClient -or $TaskManagerService
 
-function Show-Workflow-Steps {
+function ShowWorkflowSteps {
   Log "Workflow steps:"
   Log "[-RunAll]                If you don't want to specify all steps separately, you can use default process."
   Log "[-CreateRegistry]        Create docker registry, if it doesn't exist."
@@ -30,25 +30,25 @@ function Show-Workflow-Steps {
   Log "[-DeployContainers]      Remove previous and deploy new docker containers."
 }
 
-function Show-Workflow-Parameters {
+function ShowWorkflowParameters {
   Log "Workflow parameters:"
   Log "[-Tag]                   Specify tag for docker images. Default value is DEV."
 }
 
-function Show-Workflow-Services {
+function ShowWorkflowServices {
   Log "Workflow services:"
   Log "[-TaskManagerClient]     Include TaskManager.Client."
   Log "[-TaskManagerService]    Include TaskManager.Service."
 }
 
-function Show-Help {
+function ShowHelp {
   Log "Usage: .\docker-interactive.ps1 [-Flags]"
   Log ""
-  Show-Workflow-Steps
+  ShowWorkflowSteps
   Log ""
-  Show-Workflow-Parameters
+  ShowWorkflowParameters
   Log ""
-  Show-Workflow-Services
+  ShowWorkflowServices
   Log ""
   Log "Additional flags:"
   Log "[-Help]                  Displays this help message."
@@ -58,19 +58,19 @@ function Show-Help {
 }
 
 if ($Help) {
-  Show-Help
+  ShowHelp
   return
 }
 
 if (-not $WorkflowStepsDefined) {
   Log -Level Error "You need to specify at least one workflow step. Use [-Help] if you need more information."
-  Show-Workflow-Steps
+  ShowWorkflowSteps
   return
 }
 
 if (-not $WorkflowServicesDefined) {
   Log -Level Error "You need to specify at leat one workflow service. Use [-Help] if you need more information."
-  Show-Workflow-Services
+  ShowWorkflowServices
   return
 }
 
@@ -83,7 +83,7 @@ if ($RunAll -or $CreateRegistry) {
   .\scripts\docker-create-registry.ps1 -RegistryHost $RegistryHost -RegistryPort $RegistryPort
 }
 
-function Process-Service {
+function ProcessService {
   param(
     [string]$ServiceName,
     [string]$DockerName,
@@ -104,6 +104,11 @@ function Process-Service {
 
   if ($RunAll -or $PushImages) {
     Log -Level Warn "Pushing image to registry..."
+
+    $response = Invoke-RestMethod -Uri "http://${RegistryHost}:${RegistryPort}/v2/${DockerName}/tags/list"
+    Log -Level Debug "Found the following versions in the docker registry: "
+    Log -Level Debug $response.tags
+
     docker tag ${DockerName}:$Tag ${RegistryHost}:$RegistryPort/${DockerName}:$Tag
     docker push ${RegistryHost}:$RegistryPort/${DockerName}:$Tag
   }
@@ -132,7 +137,7 @@ function Process-Service {
 }
 
 if ($TaskManagerClient) {
-  Process-Service `
+  ProcessService `
     -ServiceName "TaskManager.Client" `
     -DockerName "task-manager-client" `
     -HttpPort 35020 `
@@ -140,7 +145,7 @@ if ($TaskManagerClient) {
 }
 
 if ($TaskManagerService) {
-  Process-Service `
+  ProcessService `
     -ServiceName "TaskManager.Service" `
     -DockerName "task-manager-service" `
     -HttpPort 35010 `

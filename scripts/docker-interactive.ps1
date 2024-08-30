@@ -95,7 +95,7 @@ function Process-Service {
   Log -Level Warn "Processing $ServiceName..."
 
   if ($RunAll -or $BuildImages) {
-    Log "Building docker image..."
+    Log -Level Warn "Building docker image..."
     docker build . `
       --file .\$ServiceName\Dockerfile `
       --tag ${DockerName}:$Tag
@@ -103,13 +103,26 @@ function Process-Service {
   }
 
   if ($RunAll -or $PushImages) {
-    Log "Pushing image to registry..."
+    Log -Level Warn "Pushing image to registry..."
     docker tag ${DockerName}:$Tag ${RegistryHost}:$RegistryPort/${DockerName}:$Tag
     docker push ${RegistryHost}:$RegistryPort/${DockerName}:$Tag
   }
 
   if ($RunAll -or $DeployContainers) {
-    Log "Starting container..."
+    Log -Level Warn "Starting container..."
+
+    $ContainerIsRunning = docker container ls --filter "name=$DockerName" --format "{{.Names}}" | Where-Object { $_ -eq $DockerName }
+    if ($ContainerIsRunning) {
+      Log "Stopping '$DockerName' container..."
+      docker container stop $DockerName
+    }
+
+    $ContainerExists = docker container ls --all --filter "name=$DockerName" --format "{{.Names}}" | Where-Object { $_ -eq $DockerName }
+    if ($ContainerExists) {
+      Log "Removing '$DockerName' container..."
+      docker container rm $DockerName
+    }
+
     docker run -d `
       --name ${DockerName} `
       -p ${HttpPort}:80 `
